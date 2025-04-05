@@ -5,7 +5,7 @@ import Home from './components/Home.vue'
 <template>
   <header>
     <div class="wrapper">
-      <Home msg="PGA" />
+      <Home/>
     </div>
   </header>
 

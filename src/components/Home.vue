@@ -1,15 +1,11 @@
 <script lang="ts">
+import PaymentForm from "./PaymentForm.vue";
 import PaypalButton from "./PaypalButton.vue";
 
 export default {
   components: {
-    PaypalButton
-  },
-  props: {
-    msg: {
-      type: String,
-      required: true
-    }
+    PaypalButton,
+    PaymentForm
   },
   data() {
     return {
@@ -26,9 +22,10 @@ export default {
 
 <template>
   <div class="greetings">
-    <h1 class="green">{{ msg }}</h1>
+    <h1>Plataforma de Generación de Aprendizaje Dinámico</h1>
     <h3>
       <PaypalButton />
+      <PaymentForm />
     </h3>
   </div>
 </template>

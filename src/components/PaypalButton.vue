@@ -3,7 +3,7 @@
       <div id="paypal-button-container"></div>
       <p id="result-message"></p>
     </div>
-  </template>
+</template>
   
   <script>
   export default {
@@ -16,7 +16,10 @@
   
         const script = document.createElement("script");
         script.id = "paypal-sdk";
-        script.src = "https://www.paypal.com/sdk/js?client-id=TU_CLIENT_ID&currency=USD";
+        const clientId = import.meta.env.VITE_PAYPAL_CLIENT_ID;
+        // const language = navigator.language || 'en-US';
+        // const baseLang = language.startsWith('es') ? 'es_XC' : language.replace('-', '_');
+        script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD`;
         script.onload = this.renderPaypalButton;
         document.body.appendChild(script);
       },

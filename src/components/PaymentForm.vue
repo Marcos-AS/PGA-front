@@ -25,7 +25,8 @@
         }
       },
       initializeBrick() {
-        const mp = new window.MercadoPago("YOUR_PUBLIC_KEY", { locale: "es-AR" });
+        const publicKey = import.meta.env.VITE_MERCADO_PAGO_PUBLIC_KEY;
+        const mp = new window.MercadoPago(publicKey, { locale: "es-AR" });
         const bricksBuilder = mp.bricks();
   
         const settings = {
@@ -51,6 +52,9 @@
                 .catch((error) => console.error("Payment error:", error));
             },
             onError: (error) => console.error("Brick error:", error),
+            onReady: () => {
+              console.log("Brick is ready");
+            },
           },
         };
   
