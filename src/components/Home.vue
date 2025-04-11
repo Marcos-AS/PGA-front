@@ -31,6 +31,9 @@ export default {
       
       const text = await res.text();
       this.resp = text;
+    },
+    login() {
+      this.$auth0.loginWithRedirect();
     }
   }
 }
@@ -40,6 +43,9 @@ export default {
   <div class="greetings">
     <h1>Plataforma de Generación de Aprendizaje Dinámico</h1>
     <h3>
+      <div>
+        <button @click="login">Log in</button>
+      </div>
       <div>
         <h1>Chat con Llama.cpp</h1>
         <textarea v-model="prompt" placeholder="Escribí algo..."></textarea>

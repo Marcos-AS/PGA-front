@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../components/Home.vue'
-import PaypalButton from '@/components/PaypalButton.vue'
+import PerfilComponent from '@/components/PerfilComponent.vue'
 
 const routes = [
   {
@@ -8,6 +8,11 @@ const routes = [
     name: 'home',
     component: Home
   },
+  {
+    path: '/perfil',
+    name: 'perfil',
+    component: PerfilComponent
+  }
 ]
 
 const router = createRouter({
