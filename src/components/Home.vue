@@ -33,7 +33,11 @@ export default {
       this.resp = text;
     },
     login() {
-      this.$auth0.loginWithRedirect();
+      this.$auth0.loginWithRedirect({
+        authorizationParams: {
+          prompt: 'consent'
+        }
+      });
     }
   }
 }

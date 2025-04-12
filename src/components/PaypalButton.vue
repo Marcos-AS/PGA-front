@@ -5,11 +5,14 @@
     </div>
 </template>
   
-  <script>
+  <script lang="ts">
+import { useAuth0 } from '@auth0/auth0-vue';
+
   export default {
     mounted() {
       this.loadPaypalScript();
     },
+
     methods: {
       async loadPaypalScript() {
         if (document.getElementById("paypal-sdk")) return;
@@ -24,6 +27,8 @@
         document.body.appendChild(script);
       },
       renderPaypalButton() {
+        const self = this;
+
         window.paypal.Buttons({
           style: {
             shape: "rect",
@@ -31,18 +36,33 @@
             color: "gold",
             label: "paypal",
           },
+
           async createOrder() {
-            const response = await fetch("/api/paypal/orders", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                cart: [{ id: "PRODUCT_ID", quantity: 1 }],
-              }),
-            });
-  
-            const orderData = await response.json();
-            return orderData.id;
+            try {              
+              const token = await self.$auth0.getAccessTokenSilently({
+                audience: 'https://PGAD-SIP.unlu.com',
+                scope: 'create:order'
+              });
+              console.log(token);
+              const response = await fetch("/api/paypal/orders", {
+                method: "POST",
+                headers: { 
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                  cart: [{ id: "PRODUCT_ID", quantity: 1 }],
+                }),
+              });
+
+              const orderData = await response.json();
+              return orderData.id;
+
+            } catch (error) {
+              console.error("error en createOrder: ", error); 
+            }
           },
+
           async onApprove(data, actions) {
             const response = await fetch(`/api/paypal/orders/${data.orderID}/capture`, {
               method: "POST",

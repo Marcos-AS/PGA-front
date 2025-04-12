@@ -7,10 +7,11 @@ import { createAuth0 } from '@auth0/auth0-vue'
 
 createApp(App)
 .use(createAuth0({
-    domain: "dev-p568hqvco8r5dv2g.us.auth0.com",
-    clientId: "b7NB5g7Q0eNbyVwCBPBwZWQnebRogh0u",
+    domain: "dev-ymy386h280ssuqwp.us.auth0.com",
+    clientId: "dGjxQySROmUIMaKrubMBdpAv6p0LdY6J",
     authorizationParams: {
-        redirect_uri: window.location.origin + '/perfil',
+        redirect_uri: window.location.origin,
+        audience: "https://PGAD-SIP.unlu.com"
     }
 }))
 .use(router)
