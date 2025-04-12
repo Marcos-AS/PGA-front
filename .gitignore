@@ -30,5 +30,3 @@ coverage
 *.tsbuildinfo
 
 !vue.config.js
-
-.env
