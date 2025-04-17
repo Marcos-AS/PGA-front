@@ -13,6 +13,12 @@ import { useAuth0 } from '@auth0/auth0-vue';
       this.loadPaypalScript();
     },
 
+    data() {
+      return {
+        token: "",
+      }
+    },
+
     methods: {
       async loadPaypalScript() {
         if (document.getElementById("paypal-sdk")) return;
@@ -41,9 +47,11 @@ import { useAuth0 } from '@auth0/auth0-vue';
             try {              
               const token = await self.$auth0.getAccessTokenSilently({
                 audience: 'https://PGAD-SIP.unlu.com',
-                scope: 'create:order'
+                scope: 'create:order capture:order'
               });
               console.log(token);
+              self.token = token;
+
               const response = await fetch("/api/paypal/orders", {
                 method: "POST",
                 headers: { 
@@ -66,7 +74,10 @@ import { useAuth0 } from '@auth0/auth0-vue';
           async onApprove(data, actions) {
             const response = await fetch(`/api/paypal/orders/${data.orderID}/capture`, {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
+              headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${self.token}`
+              },
             });
   
             const orderData = await response.json();
