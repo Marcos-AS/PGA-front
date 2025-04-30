@@ -15,4 +15,4 @@ createApp(App)
     }
 }))
 .use(router)
-.mount('#app')
+.mount('#app') //div con id app

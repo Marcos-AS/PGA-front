@@ -6,7 +6,7 @@
 </template>
   
   <script lang="ts">
-import { useAuth0 } from '@auth0/auth0-vue';
+  import { useAuth0 } from '@auth0/auth0-vue';
 
   export default {
     mounted() {
@@ -43,7 +43,7 @@ import { useAuth0 } from '@auth0/auth0-vue';
             label: "paypal",
           },
 
-          async createOrder() {
+          async createOrder() { //lo llama la sdk de paypal
             try {              
               const token = await self.$auth0.getAccessTokenSilently({
                 audience: 'https://PGAD-SIP.unlu.com',
@@ -59,7 +59,7 @@ import { useAuth0 } from '@auth0/auth0-vue';
                   "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                  cart: [{ id: "PRODUCT_ID", quantity: 1 }],
+                  cart: [{ id: "123", quantity: 1 }],
                 }),
               });
 
