@@ -80,7 +80,7 @@ export default {
   </div>
 </template>
 
-<style scoped>
+<style>
 /* HEADER */
 .header {
   display: flex;
@@ -208,22 +208,29 @@ button {
   padding: 0.5rem 1rem;
 }
 
-div {
+/*div {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-}
+}*/
 
 .container {
   width: 100%;
   padding: 0 2rem;
   box-sizing: border-box;
 }
-
+/*
 .section {
   max-width: 1200px;
   margin: 0 auto;
+} */
+
+.section {
+  width: 100%;
+  margin: 0;
+  max-width: none;
 }
+
 
 /* Cursos disponibles */
 .curso-card {
