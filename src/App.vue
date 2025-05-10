@@ -47,7 +47,7 @@ export default {
         <RouterLink to="/" class="logo">PGA</RouterLink>
         <nav class="nav">
           <RouterLink to="/suscripciones">Suscripciones</RouterLink>
-          <a href="#cursos">Cursos</a>
+          <RouterLink to="/cursos">Cursos</Routerlink>
           <button @click="login" class="login-btn">Iniciar Sesión</button>
           <div class="menu-icon">☰</div>
         </nav>
@@ -223,6 +223,46 @@ div {
 .section {
   max-width: 1200px;
   margin: 0 auto;
+}
+
+/* Cursos disponibles */
+.curso-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.curso-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.curso-card h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #21A899;
+}
+
+.temas-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.seccion-contenido {
+  padding: 20px;
+}
+
+.temas,
+.recursos {
+  margin-bottom: 30px;
 }
 
 </style>
