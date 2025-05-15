@@ -16,7 +16,8 @@
 
     methods: {
         async getSuscripciones() {
-            const respuesta = await axios.get('/api/suscripciones');
+            const respuesta = await axios.get('/api/tiposSuscripcion');
+            console.log(respuesta.data);
             this.suscripciones = respuesta.data;
         }
     }
@@ -29,7 +30,7 @@
         <h1>Suscripciones</h1>
         <ul>
             <li v-for="suscripcion in suscripciones" :key="suscripcion.id">
-                Suscripcion {{ suscripcion.tipo_suscripcion }},
+                Suscripcion {{ suscripcion.tipoSuscripcion }},
                 Precio: {{ suscripcion.precio }}
             </li>
         </ul>

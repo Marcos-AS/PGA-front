@@ -9,9 +9,6 @@ export default {
   },
 
   methods: {
-    async comprarCurso() {
-      // tu lógica aquí
-    },
     async enviar() {
       console.log("Método enviar() activado con prompt:", this.prompt);
 
@@ -27,6 +24,7 @@ export default {
       const text = await res.text();
       this.resp = text;
     },
+    
     login() {
       this.$auth0.loginWithRedirect({
         authorizationParams: {
@@ -47,8 +45,8 @@ export default {
         <RouterLink to="/" class="logo">PGA</RouterLink>
         <nav class="nav">
           <RouterLink to="/suscripciones">Suscripciones</RouterLink>
-          <RouterLink to="/cursos">Cursos</Routerlink>
-          <RouterLink to="/perfil">Perfil</Routerlink>
+          <RouterLink to="/cursos">Cursos</RouterLink>
+          <RouterLink to="/perfil">Perfil</RouterLink>
           <button @click="login" class="login-btn">Iniciar Sesión</button>
           <div class="menu-icon">☰</div>
         </nav>

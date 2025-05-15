@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 const cursos = [
   {
     titulo: "Programación en Python",
@@ -52,6 +52,10 @@ const cursos = [
       <h3>Cursos Activos</h3>
       <section class="temas-box">
         <p class="curso-card">¡Lo siento! No tienes ningún curso activo en este momento.</p>
+      </section>
+
+      <section>
+        <RouterLink to="formulario-creacion">Crear curso</RouterLink>
       </section>
 
       <!-- Esto debería estar restringido solo a administradores en producción -->
