@@ -41,12 +41,12 @@ export default defineComponent({
           <ul>
             <li>Aprende a tu ritmo</li>
             <li>Cursos online con corrección automática</li>
-            <li><a href="#cursos">🔍 Ver cursos</a></li>
+            <RouterLink to="/cursos">🔍 Ver cursos</Routerlink>
           </ul>
         </div>
       </section>
 
-    <!-- PARTE PRUEBA -->      
+    <!-- PARTE PRUEBA -->
       <section class="greetings">
         <h1>Chat con Llama.cpp</h1>
         <textarea v-model="prompt" placeholder="Escribí algo..."></textarea>

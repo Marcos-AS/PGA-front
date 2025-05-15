@@ -48,6 +48,7 @@ export default {
         <nav class="nav">
           <RouterLink to="/suscripciones">Suscripciones</RouterLink>
           <RouterLink to="/cursos">Cursos</Routerlink>
+          <RouterLink to="/perfil">Perfil</Routerlink>
           <button @click="login" class="login-btn">Iniciar Sesión</button>
           <div class="menu-icon">☰</div>
         </nav>
@@ -128,6 +129,7 @@ export default {
   flex-wrap: wrap;
 }
 
+
 .card {
   flex: 1 1 300px;
   padding: 1rem;
@@ -148,6 +150,99 @@ export default {
 .imagen-curso:hover {
   transform: scale(1.05);
 }
+
+/*Perfil Usuario*/
+.perfil-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.perfil-usuario {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+.perfil-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.perfil-card {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.perfil-card h3 {
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  color: #222;
+}
+
+.perfil-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.perfil-card li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.perfil-card li:last-child {
+  border-bottom: none;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+button .icon {
+  font-size: 1.2rem;
+}
+
+.btn-editar {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-editar:hover {
+  background-color: #0056b3;
+}
+.btn-logout {
+  background-color: #2c3e50 ;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.btn-logout:hover {
+  background-color: #2c3e50;
+}
+
 
 /* HERO */
 .hero {
@@ -216,9 +311,12 @@ button {
 
 .container {
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 0 2rem;
   box-sizing: border-box;
 }
+
 /*
 .section {
   max-width: 1200px;
