@@ -7,13 +7,11 @@
     <div v-else-if="isAuthenticated">
       <h2>Perfil del usuario</h2>
 
-      <!-- Json información usuario -->
-      <!-- <pre><code>{{ user }}</code></pre> -->
       <div>
         <button @click="logout" class="btn-logout">Cerrar sesión</button>
       </div>
 
-        <main class="perfil-container">
+      <main class="perfil-container">
         <h2 class="perfil-usuario">
           <small>({{ user?.name || 'Invitado' }})</small>
         </h2>
@@ -23,23 +21,49 @@
           <div class="perfil-card">
             <h3>Datos Personales</h3>
             <ul>
+              <!-- NOMBRE -->
               <li>
-                Nombre: {{ user.nickname }}
-                <button title="Editar">
-                  <span class="icon">✎</span>
-                </button>
+                Nombre:
+                <template v-if="editingField === 'nickname'">
+                  <input v-model="editableValues.nickname" />
+                  <button @click="saveField('nickname')">💾</button>
+                </template>
+                <template v-else>
+                  {{ user.nickname }}
+                  <button title="Editar" @click="startEditing('nickname')">
+                    <span class="icon">✎</span>
+                  </button>
+                </template>
               </li>
+
+              <!-- CORREO -->
               <li>
-                Correo: {{ user.email }}
-                <button title="Editar">
-                  <span class="icon">✎</span>
-                </button>
+                Correo:
+                <template v-if="editingField === 'email'">
+                  <input v-model="editableValues.email" />
+                  <button @click="saveField('email')">💾</button>
+                </template>
+                <template v-else>
+                  {{ user.email }}
+                  <button title="Editar" @click="startEditing('email')">
+                    <span class="icon">✎</span>
+                  </button>
+                </template>
               </li>
+
+              <!-- CONTRASEÑA -->
               <li>
-                Contraseña
-                <button title="Editar">
-                  <span class="icon">✎</span>
-                </button>
+                Contraseña:
+                <template v-if="editingField === 'password'">
+                  <input type="password" v-model="editableValues.password" />
+                  <button @click="saveField('password')">💾</button>
+                </template>
+                <template v-else>
+                  ********
+                  <button title="Editar" @click="startEditing('password')">
+                    <span class="icon">✎</span>
+                  </button>
+                </template>
               </li>
             </ul>
           </div>
@@ -87,17 +111,31 @@ export default {
       user: this.$auth0.user,
       isAuthenticated: this.$auth0.isAuthenticated,
       isLoading: this.$auth0.isLoading,
+      editingField: '',
+      editableValues: {
+        nickname: this.$auth0.user?.nickname || '',
+        email: this.$auth0.user?.email || '',
+        password: '',
+      },
     };
   },
   methods: {
     logout() {
       this.$auth0.logout({
         logoutParams: {
-          returnTo: window.location.origin
-        }
+          returnTo: window.location.origin,
+        },
       });
-    }
-  }
+    },
+    startEditing(field: string) {
+      this.editingField = field;
+    },
+    saveField(field: string) {
+      // Lo edita local, agregar lógica real con API
+      this.user[field] = this.editableValues[field];
+      this.editingField = '';
+    },
+  },
 };
 </script>
 

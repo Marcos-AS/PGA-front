@@ -23,15 +23,16 @@ const cursos = [
       <section class="temas">
         <h3>Prepararse por temas</h3>
         <section class="temas-box">
-          <a
+          <RouterLink
             v-for="curso in cursos"
             :key="curso.titulo"
-            :href="`/curso?titulo=${encodeURIComponent(curso.titulo)}`"
+            :to="`/curso/${encodeURIComponent(curso.titulo)}`"
             class="curso-card"
           >
             <h4>{{ curso.titulo }}</h4>
             <p>{{ curso.descripcion }}</p>
-          </a>
+          </RouterLink>
+
         </section>
       </section>
 

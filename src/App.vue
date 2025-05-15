@@ -24,7 +24,7 @@ export default {
       const text = await res.text();
       this.resp = text;
     },
-    
+
     login() {
       this.$auth0.loginWithRedirect({
         authorizationParams: {
@@ -241,6 +241,29 @@ button .icon {
   background-color: #2c3e50;
 }
 
+.icon {
+  margin-left: 0.5rem;
+  cursor: pointer;
+}
+input {
+  margin-left: 0.5rem;
+}
+button {
+  margin-left: 0.5rem;
+}
+
+/* DETALLE MODULO*/
+.modulo-detalle {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+iframe {
+  display: block;
+  margin-top: 1rem;
+  max-width: 100%;
+}
 
 /* HERO */
 .hero {
