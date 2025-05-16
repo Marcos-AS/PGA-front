@@ -265,6 +265,254 @@ iframe {
   max-width: 100%;
 }
 
+/* --- Detalle Curso --- */
+
+.curso-detalle {
+  max-width: 960px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  font-family: 'Inter', sans-serif;
+  color: #222;
+}
+
+.curso-detalle h2 {
+  font-size: 2rem;
+  color: #1AA179;
+  margin-bottom: 1rem;
+}
+
+.curso-detalle img {
+  width: 100%;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  max-height: 400px;
+  object-fit: cover;
+}
+
+/* Caja general de información */
+.curso-box {
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.curso-box p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+}
+
+.curso-box ul {
+  margin-left: 1.5rem;
+  padding-left: 1rem;
+}
+
+.curso-box li {
+  list-style-type: disc;
+  color: #444;
+}
+
+/* Sección de módulos */
+.modulos-box {
+  margin-top: 2rem;
+}
+
+.curso-subt {
+  font-size: 1.5rem;
+  color: #1AA179;
+  margin-bottom: 1rem;
+}
+
+/* Cada módulo como card */
+.curso-card {
+  background-color: #f9f9f9;
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+}
+
+.curso-card a {
+  color: #1AA179;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.curso-card a:hover {
+  text-decoration: underline;
+}
+
+.curso-card p {
+  margin-top: 0.5rem;
+  color: #333;
+}
+
+/* Detalle módulo */
+.modulo-detalle {
+  background-color: #ffffff;
+  color: #1f2937; /* Gris oscuro */
+  padding: 2rem;
+  margin: 2rem auto;
+  border-radius: 1rem;
+  max-width: 800px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  font-family: 'Inter', sans-serif;
+}
+
+.modulo-detalle h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #047857; /* Verde PGA */
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #d1d5db; /* Gris claro */
+  padding-bottom: 0.5rem;
+}
+
+.modulo-detalle p {
+  font-size: 1rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.6;
+  color: #374151; /* Texto estándar PGA */
+}
+
+.modulo-detalle p strong {
+  font-weight: 600;
+  color: #111827;
+}
+
+.modulo-detalle iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: none;
+  border-radius: 0.75rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.modulo-detalle a {
+  display: inline-block;
+  color: #047857;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid #047857;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.modulo-detalle a:hover {
+  background-color: #d1fae5;
+}
+
+.botones-modulo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px; /* espacio entre botones */
+  margin-top: 20px;
+}
+
+.btn-ver-ejercicios,
+.btn-volver-curso {
+  padding: 10px 16px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: bold;
+  display: inline-block;
+}
+
+
+.btn-ver-ejercicios:hover {
+  background-color: #218838;
+}
+
+.btn-volver-curso {
+  border: 2px solid #28a745;
+  color: #28a745;
+  background-color: transparent;
+}
+
+.btn-volver-curso:hover {
+  background-color: #e6f4ea;
+}
+
+
+
+/* Detalle Ejercicios */
+.ejercicios-container {
+  padding: 1rem;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.breadcrumb {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.titulo-seccion {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.ejercicios-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .ejercicios-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .ejercicios-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.ejercicio-card {
+  border: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.ejercicio-titulo {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.ejercicio-nivel {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.75rem;
+}
+
+.btn-resolver {
+  background-color: #6b7280;
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  transition: background-color 0.3s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-resolver:hover {
+  background-color: #4b5563;
+}
+
+
+
+
 /* HERO */
 .hero {
   text-align: center;

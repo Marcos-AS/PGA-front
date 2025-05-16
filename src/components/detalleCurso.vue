@@ -41,19 +41,75 @@
 import { onMounted, ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 
-const route = useRoute()
-const curso = ref<any | null>(null)
+interface Curso {
+  titulo: string
+  descripcion: string
+  imagen?: string
+  temario: string
+  nivel: string
+  duracion: string
+  modulos?: {
+    id: number
+    titulo: string
+    descripcion: string
+  }[]
+}
 
-// Obtener curso desde API
+// 2. Crear ref con tipo adecuado
+const curso = ref<Curso | null>(null)
+
+const route = useRoute()
+const titulo = decodeURIComponent(route.params.titulo as string)
+
+
 onMounted(async () => {
-  const id = route.params.id || route.query.id
   try {
-    const response = await fetch(`/api/cursos/${id}`)
-    curso.value = await response.json()
+    const response = await fetch(`/api/cursos?titulo=${encodeURIComponent(titulo)}`)
+    const data = await response.json()
+    console.log('Respuesta de la API:', data)
+
+    if (Array.isArray(data)) {
+      curso.value = data[0] ?? null
+    } else if (data.cursos) {
+      curso.value = data.cursos[0] ?? null
+    } else {
+      curso.value = null
+    }
+
   } catch (error) {
     console.error('Error cargando curso:', error)
+    //curso.value = null
+
+     // Datos simulados para prueba
+    curso.value = {
+      titulo: 'Curso de Programación en Python (Simulado)',
+      descripcion: 'Este es un curso simulado para mostrar datos de prueba mientras el backend no responde.',
+      imagen: 'https://via.placeholder.com/600x300?text=Curso+Simulado',
+      duracion: '8 semanas',
+      nivel: 'Intermedio',
+      temario: 'Temas simulados',
+      modulos: [
+    {
+      id: 1,
+      titulo: 'Módulo 1: Fundamentos de Python',
+      descripcion: 'Aprenderás la sintaxis básica y estructuras fundamentales del lenguaje.'
+    },
+    {
+      id: 2,
+      titulo: 'Módulo 2: Programación Orientada a Objetos',
+      descripcion: 'Explorarás clases, objetos, herencia y encapsulamiento en Python.'
+    },
+    {
+      id: 3,
+      titulo: 'Módulo 3: Librerías y Buenas Prácticas',
+      descripcion: 'Verás cómo usar librerías populares como NumPy, y adoptar un estilo de código limpio.'
+    }
+    ]
+    }
   }
+
 })
+
 
 // Separar temario por líneas
 const temarioItems = computed(() => {

@@ -6,6 +6,8 @@ import Cursos from '../components/Cursos.vue'
 import FormCreacion from '../components/FormCreacion.vue'
 import detalleCurso from '../components/detalleCurso.vue'
 import detalleModulo from '../components/detalleModulo.vue'
+import Ejerciciosview from '@/components/Ejerciciosview.vue'
+
 
 
 
@@ -31,16 +33,20 @@ const routes = [
     component: Cursos,
   },
   {
-  path: '/curso/:titulo',
-  name: 'detalleCurso',
-  component: detalleCurso,
+    path: '/curso/:id',
+    name: 'detalleCurso',
+    component: detalleCurso,
   },
   {
-  path: '/modulo/:id',
-  name: 'detalleModulo',
-  component: detalleModulo,
+    path: '/modulo/:id',
+    name: 'detalleModulo',
+    component: detalleModulo,
   },
-
+  {
+    path: '/modulo/:id/ejercicios',
+    name: 'EjerciciosModulo',
+    component: Ejerciciosview,
+  },
 
   {
     path: '/formulario-creacion',
