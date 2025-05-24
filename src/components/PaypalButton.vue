@@ -32,6 +32,7 @@
         script.onload = this.renderPaypalButton;
         document.body.appendChild(script);
       },
+      
       renderPaypalButton() {
         const self = this;
 
