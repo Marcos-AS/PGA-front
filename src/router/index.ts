@@ -7,6 +7,8 @@ import FormCreacion from '../components/FormCreacion.vue'
 import detalleCurso from '../components/detalleCurso.vue'
 import detalleModulo from '../components/detalleModulo.vue'
 import Ejerciciosview from '@/components/Ejerciciosview.vue'
+import opcionesPago from '@/components/opcionesPago.vue'
+import confirmacion from '@/components/confirmacion.vue'
 
 
 
@@ -51,7 +53,18 @@ const routes = [
   {
     path: '/formulario-creacion',
     component: FormCreacion,
+  },
+  {
+    path: '/pago',
+    name: 'pago',
+    component: opcionesPago,
+  },
+  {
+    path: '/confirmacion',
+    name: 'confirmacion',
+    component: confirmacion,
   }
+
 ]
 
 const router = createRouter({
