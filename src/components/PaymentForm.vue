@@ -24,6 +24,7 @@
           this.initializeBrick();
         }
       },
+
       initializeBrick() {
         const publicKey = import.meta.env.VITE_MERCADO_PAGO_PUBLIC_KEY;
         const mp = new window.MercadoPago(publicKey, { locale: "es-AR" });
@@ -57,7 +58,6 @@
             },
           },
         };
-  
         bricksBuilder.create("cardPayment", "cardPaymentBrick_container", settings);
       },
     },

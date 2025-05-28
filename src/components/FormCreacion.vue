@@ -9,14 +9,26 @@ export default {
                 descripcion: "",
                 duracion: "",
                 nivel: ""
-            }
+            },
+            token: ""
         };
     },
 
     methods: {
         async enviarForm() {
             try {
-                const response = await axios.post('/api/cursos', this.curso);
+                const token = await this.$auth0.getAccessTokenSilently({
+                    audience: 'https://PGAD-SIP.unlu.com',
+                    scope: 'create:course'
+                })
+                const response = await axios.post('/api/cursos', this.curso,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        }
+                    }
+                );
                 console.log(response.data);
                 
             } catch (error) {
@@ -35,7 +47,6 @@ export default {
 
         <label for="tema">Selecciona el lenguaje sobre el que te gustaría aprender: </label>
         <select v-model="curso.titulo" name="tema" id="tema">
-            <option value="default">Selecciona una opción</option>
             <option value="python">Python</option>
             <option value="java">Java</option>
             <option value="javascript">JavaScript</option>
@@ -51,7 +62,6 @@ export default {
 
         <label for="duracion">Selecciona la duración del curso: </label>
         <select name="duracion" id="duracion" v-model="curso.duracion">
-            <option value="default">Selecciona una opción</option>
             <option value="1 semana">1 semana</option>
             <option value="2 semanas">2 semanas</option>
             <option value="1 mes">1 mes</option>
@@ -61,7 +71,6 @@ export default {
 
         <label for="nivel">Selecciona el nivel del curso: </label>
         <select name="nivel" id="nivel" v-model="curso.nivel">
-            <option value="default">Selecciona una opción</option>
             <option value="basico">Básico</option>
             <option value="intermedio">Intermedio</option>
             <option value="avanzado">Avanzado</option>
