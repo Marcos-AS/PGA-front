@@ -48,6 +48,8 @@ export default {
     const router = useRouter()
 
     const finalizarPago = () => {
+      console.log("metodo seleccionado: " + metodoSeleccionado.value);
+      
       estadoPago.value = 'Pago exitoso'
       setTimeout(() => {
         router.push('/confirmacion')

@@ -40,17 +40,33 @@
             paymentMethods: { maxInstallments: 1 },
           },
           callbacks: {
-            onSubmit: (cardFormData) => {
-              return fetch("http://localhost:8080/api/v1/mercadopago/preference", {
+            onSubmit: async (cardFormData) => {
+                const token = await this.$auth0.getAccessTokenSilently();
+                console.log(token);
+                
+                return fetch("http://localhost:6060/api/v1/mercadopago/preference", {
                   method: "POST",
-                  headers: { "Content-Type": "application/json" },
+                  headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                  },
                   body: JSON.stringify(cardFormData),
                 })
-                .then((response) => response.json())
-                .then((result) => {
-                  console.log("Payment result:", result);
+                .then(async (response) => {
+                  const text = await response.text();
+                  console.log("text de la respuesta: ", text);
+                  try {
+                    return JSON.parse(text);
+                  } catch (e) {
+                    console.warn("no es JSON valido", e);
+                    return text;
+                  }                  
                 })
-                .catch((error) => console.error("Payment error:", error));
+                .then(url => {
+                  console.log("url de redirección: ", url);
+                  window.location.href = url;
+                })
+                .catch((error) => console.error("error en el pago: ", error));
             },
             onError: (error) => console.error("Brick error:", error),
             onReady: () => {
