@@ -56,14 +56,11 @@ const cursos = [
       </section>
 
       <section>
-        <RouterLink to="formulario-creacion">Crear curso</RouterLink>
       </section>
-
+      
       <!-- Esto debería estar restringido solo a administradores en producción -->
-      <section>
-        <a href="/agregar-curso" class="curso-card">
-          <h4>Agregar un nuevo curso</h4>
-        </a>
+      <section class="curso-card">
+          <h4><RouterLink to="formulario-creacion">Crear curso</RouterLink></h4>
       </section>
     </section>
   </main>

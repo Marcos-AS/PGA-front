@@ -13,6 +13,30 @@ export default defineComponent({
         resp: ""
         };
     },
+
+    methods: {
+        async enviar() {
+            try {
+                const token = await this.$auth0.getAccessTokenSilently({
+                              audience: 'https://PGAD-SIP.unlu.com',
+                              scope: 'create:course'
+                            });
+                console.log(token);
+                
+                const response = await fetch("/api/llama", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ prompt: this.prompt })
+                  });
+                this.resp = await response.text();
+            } catch (error) {
+              console.error(error);
+            }
+        }
+    }
 });
 
 </script>
