@@ -120,16 +120,30 @@ export default {
 
 /* CURSOS DESTACADOS */
 .cursos-section {
-  display: flex;
+  /*display: flex;
   gap: 2rem;
   padding: 2rem;
   justify-content: center;
-  flex-wrap: wrap;
+  flex-wrap: wrap;*/
+
+    display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 2rem;
+  justify-content: center;
+  align-items: center;
 }
 
 
 .card {
-  flex: 1 1 300px;
+  /*flex: 1 1 300px;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  text-align: center;
+  background-color: #f9f9f9;*/
+  width: 100%;
+  max-width: 800px;
   padding: 1rem;
   border: 1px solid #ccc;
   border-radius: 12px;

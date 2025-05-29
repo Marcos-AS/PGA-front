@@ -22,7 +22,7 @@ export default defineComponent({
                               scope: 'create:course'
                             });
                 console.log(token);
-                
+
                 const response = await fetch("/api/llama", {
                     method: "POST",
                     headers: {
@@ -51,24 +51,34 @@ export default defineComponent({
           sostenible, adaptandose a cada usuario y evolucionando con ellos.</p>
     </section>
 
-      <!-- CURSOS DESTACADOS -->
-      <section id="cursos" class="cursos-section">
-        <div class="card">
-          <h2>Cursos Destacados</h2>
-          <a href="#curso-detalle">
-            <img src="/src/assets/portadaCurso.jpg" alt="Curso Destacado" class="imagen-curso">
-          </a>
-        </div>
+    <section id="cursos" class="cursos-section">
 
-        <div class="card">
-          <h2>Beneficios de la Plataforma</h2>
+      <div class="card">
+        <h2>Ayudanos a conocerte</h2>
+        <ul>
+          <li>Armamos el curso a tu medida</li>
+          <RouterLink to="/formulario-creacion"> Crear curso</Routerlink>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Beneficios de la Plataforma</h2>
           <ul>
             <li>Aprende a tu ritmo</li>
             <li>Cursos online con corrección automática</li>
             <RouterLink to="/cursos">🔍 Ver cursos</Routerlink>
           </ul>
-        </div>
-      </section>
+      </div>
+
+
+      <!-- CURSOS DESTACADOS -->
+      <div class="card">
+        <h2>Cursos Destacados</h2>
+        <a href="#curso-detalle">
+          <img src="/src/assets/portadaCurso.jpg" alt="Curso Destacado" class="imagen-curso">
+        </a>
+      </div>
+    </section>
 
     <!-- PARTE PRUEBA -->
       <section class="greetings">

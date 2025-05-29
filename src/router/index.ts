@@ -9,6 +9,8 @@ import detalleModulo from '../components/detalleModulo.vue'
 import Ejerciciosview from '@/components/Ejerciciosview.vue'
 import opcionesPago from '@/components/opcionesPago.vue'
 import confirmacion from '@/components/confirmacion.vue'
+import detalleEjercicio from '@/components/detalleEjercicio.vue'
+import Correccion from '@/components/correccion.vue'
 
 
 
@@ -43,6 +45,16 @@ const routes = [
     path: '/modulo/:id',
     name: 'detalleModulo',
     component: detalleModulo,
+  },
+  {
+    path: '/modulo/:moduloId/detalleEjercicio',
+    name: 'detalleEjercicio',
+    component: detalleEjercicio,
+  },
+  {
+    path: '/correccion/:id',
+    name: 'Correccion',
+    component: Correccion,
   },
   {
     path: '/modulo/:id/ejercicios',

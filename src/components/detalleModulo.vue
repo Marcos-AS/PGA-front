@@ -57,8 +57,8 @@ onMounted(async () => {
     ></iframe>
 
     <div class="botones-modulo">
-      <RouterLink :to="`/modulo/${modulo.id}/ejercicios`" class="btn-ver-ejercicios">
-        Ver ejercicios del módulo
+      <RouterLink :to="`/modulo/${modulo.id}/detalleEjercicio`" class="btn-ver-ejercicios">
+        Ver ejercicio del módulo
       </RouterLink>
 
       <RouterLink :to="cursoUrl" class="btn-volver-curso">
