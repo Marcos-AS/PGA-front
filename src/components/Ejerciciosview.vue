@@ -2,6 +2,9 @@
   <div class="ejercicios-container">
     <h3 class="titulo-seccion">Ejercicios</h3>
 
+       <!-- Loader -->
+    <p v-if="cargando">Cargando ejercicios...</p>
+
     <div class="ejercicios-grid">
       <div
         v-for="ejercicio in ejercicios"
@@ -9,7 +12,7 @@
         class="ejercicio-card"
       >
         <h4 class="ejercicio-titulo">{{ ejercicio.titulo }}</h4>
-        <p class="ejercicio-nivel">Nivel: {{ formatearNivel(ejercicio.dificultad) }}</p>
+        <p class="ejercicio-nivel">Nivel: {{ejercicio.dificultad }}</p>
         <RouterLink
           class="btn-resolver"
           :to="`/ejercicio/${ejercicio.id}`"
@@ -23,38 +26,47 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import axios from 'axios'
 
-const moduloNombre = 'Algoritmos' // Podés pasarlo como prop o desde ruta
+import { useRoute } from 'vue-router'
+const route = useRoute()
+const moduloId = parseInt(route.params.id)
 
-// Simulación de datos
+//const moduloNombre = 'Algoritmos' // Podés pasarlo como prop o desde ruta
+
+
 const ejercicios = ref([
-  { id: 1, titulo: 'Sumar números', dificultad: 1 },
+  // Simulación de datos
+  /*{ id: 1, titulo: 'Sumar números', dificultad: 1 },
   { id: 2, titulo: 'Ordenar lista', dificultad: 2 },
   { id: 3, titulo: 'Búsqueda binaria', dificultad: 3 },
-  { id: 4, titulo: 'Factorial', dificultad: 1 },])
+  { id: 4, titulo: 'Factorial', dificultad: 1 },*/])
 
-
+const cargando = ref(true)
 
 onMounted(async () => {
+  if (isNaN(moduloId)) {
+    console.error('ID del módulo no válido.')
+    cargando.value = false
+    return
+  }
+
   try {
-    const res = await axios.get('/api/ejercicios')
-    ejercicios.value = res.data
+    const res = await axios.get(`/api/modulos/${moduloId}/ejercicios`)
+    if (Array.isArray(res.data)) {
+      ejercicios.value = res.data
+    } else {
+      console.warn('La API no devolvió un array de ejercicios.')
+    }
   } catch (error) {
-    console.error('Error al cargar ejercicios:', error)
+    console.error('Error al cargar ejercicios del módulo:', error)
+  } finally {
+    cargando.value = false
   }
 })
 
-function formatearNivel(dificultad) {
-  switch (dificultad) {
-    case 1: return 'básico'
-    case 2: return 'intermedio'
-    case 3: return 'avanzado'
-    default: return 'desconocido'
-  }
-}
 
 function resolverDesafio(idEjercicio) {
   console.log('Ir a resolver ejercicio con id:', idEjercicio)
-  // Redirigir o abrir modal, etc.
 }
 </script>

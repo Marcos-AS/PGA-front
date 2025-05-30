@@ -1,51 +1,47 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import axios from 'axios'
 
 const route = useRoute()
 const router = useRouter()
-
-// Obtener el ID del módulo desde la URL
 const moduloId = route.params.id as string
 
-// Datos simulados
+// Estado reactivo para el módulo
 const modulo = ref({
-  id: parseInt(moduloId),
-  idCurso: 1,
-  titulo: "Módulo 1: Introducción a Python",
-  descripcion: "Este es un módulo introductorio para demostrar la vista.",
-  orden: 1,
-  contenido: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-  cursoTitulo: "Programación en Python"
+  id: 0,
+  idCurso: 0,
+  titulo: '',
+  descripcion: '',
+  orden: 0,
+  contenido: '',
+  cursoTitulo: ''
 })
 
-// Computar el enlace de retorno al curso
-const cursoUrl = computed(() => `/curso/${encodeURIComponent(modulo.value.cursoTitulo)}`)
-
-// NOTA: Cuando esté lista la API, podés reemplazar lo anterior por algo así:
-/*
-import { onMounted } from 'vue'
-
+// Lógica para cargar el módulo desde la API
 onMounted(async () => {
   try {
-    const res = await fetch(`/api/modulos/${moduloId}`)
-    if (!res.ok) throw new Error('Error al cargar módulo')
-    modulo.value = await res.json()
+    const response = await axios.get(`/api/modulos/${moduloId}`)
+    modulo.value = response.data
   } catch (error) {
-    console.error(error)
+    console.error("Error al cargar módulo:", error)
     router.push('/404')
   }
 })
-*/
+
+// Computar el enlace al curso
+const cursoUrl = computed(() => `/curso/${encodeURIComponent(modulo.value.cursoTitulo)}`)
 </script>
 
 <template>
   <main class="modulo-detalle">
     <h2>{{ modulo.titulo }}</h2>
 
-    <p v-if="modulo.descripcion"><strong>Descripción:</strong> {{ modulo.descripcion }}</p>
+    <p v-if="modulo.descripcion">
+      <strong>Descripción:</strong> {{ modulo.descripcion }}
+    </p>
 
-    <p><strong>Contenido:</strong></p>
+    <!-- <p><strong>Contenido:</strong></p>
     <iframe
       v-if="modulo.contenido"
       width="560"
@@ -54,10 +50,10 @@ onMounted(async () => {
       frameborder="0"
       allowfullscreen
       title="Contenido del módulo"
-    ></iframe>
+    ></iframe> -->
 
     <div class="botones-modulo">
-      <RouterLink :to="`/modulo/${modulo.id}/ejercicios`" class="btn-ver-ejercicios">
+      <RouterLink :to="`/modulo/${modulo.id}/Ejerciciosview`" class="btn-ver-ejercicios">
         Ver ejercicios del módulo
       </RouterLink>
 
@@ -65,7 +61,7 @@ onMounted(async () => {
         ← Volver al curso
       </RouterLink>
     </div>
-
   </main>
 </template>
+
 
