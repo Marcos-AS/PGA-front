@@ -70,6 +70,7 @@ export default {
         <select name="duracion" id="duracion" v-model="curso.duracion">
             <option value="1 semana">1 semana</option>
             <option value="2 semanas">2 semanas</option>
+            <option value="4 semanas">4 semanas</option>
             <option value="1 mes">1 mes</option>
             <option value="3 meses">3 meses</option>
             <option value="6 meses">6 meses</option>
@@ -77,7 +78,7 @@ export default {
 
         <label for="nivel">Selecciona el nivel del curso: </label>
         <select name="nivel" id="nivel" v-model="curso.nivel">
-            <option value="basico">Básico</option>
+            <option value="principiante">Principiante</option>
             <option value="intermedio">Intermedio</option>
             <option value="avanzado">Avanzado</option>
         </select>

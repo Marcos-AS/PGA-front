@@ -81,7 +81,7 @@ onMounted(async () => {
     //curso.value = null
 
      // Datos simulados para prueba
-    curso.value = {
+    /*curso.value = {
       titulo: 'Curso de Programación en Python (Simulado)',
       descripcion: 'Este es un curso simulado para mostrar datos de prueba mientras el backend no responde.',
       imagen: 'https://via.placeholder.com/600x300?text=Curso+Simulado',
@@ -105,7 +105,7 @@ onMounted(async () => {
       descripcion: 'Verás cómo usar librerías populares como NumPy, y adoptar un estilo de código limpio.'
     }
     ]
-    }
+    }*/
   }
 
 })

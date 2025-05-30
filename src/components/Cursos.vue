@@ -1,10 +1,36 @@
-<script setup lang="ts">
-const cursos = [
+<script lang="ts">
+/*const cursos = [
   {
     titulo: "Programación en Python",
     descripcion: "Aprendé desde lo básico hasta temas avanzados de Python.",
   },
-];
+];*/
+  import axios from 'axios';
+
+  export default {
+    mounted() {
+      this.getCursos();
+    },
+
+    data() {
+      return {
+        cursos: [],
+      };
+    },
+
+    methods: {
+      async getCursos() {
+        try {
+          const respuesta = await axios.get('/api/cursos');
+          console.log(respuesta.data);
+          this.cursos = respuesta.data;
+        } catch (error) {
+          console.error('Error al obtener cursos:', error);
+        }
+      },
+    },
+  };
+
 </script>
 
 <template>
