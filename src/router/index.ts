@@ -47,7 +47,7 @@ const routes = [
     component: detalleModulo,
   },
   {
-    path: '/modulo/:moduloId/detalleEjercicio',
+    path: '/ejercicio/:id',
     name: 'detalleEjercicio',
     component: detalleEjercicio,
   },
