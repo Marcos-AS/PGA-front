@@ -26,18 +26,22 @@ import { ref, onMounted } from 'vue'
 
 const moduloNombre = 'Algoritmos' // Podés pasarlo como prop o desde ruta
 
-const ejercicios = ref([])
-
 // Simulación de datos
-const mockData = [
+const ejercicios = ref([
   { id: 1, titulo: 'Sumar números', dificultad: 1 },
   { id: 2, titulo: 'Ordenar lista', dificultad: 2 },
   { id: 3, titulo: 'Búsqueda binaria', dificultad: 3 },
-  { id: 4, titulo: 'Factorial', dificultad: 1 },
-]
+  { id: 4, titulo: 'Factorial', dificultad: 1 },])
 
-onMounted(() => {
-  ejercicios.value = mockData
+
+
+onMounted(async () => {
+  try {
+    const res = await axios.get('/api/ejercicios')
+    ejercicios.value = res.data
+  } catch (error) {
+    console.error('Error al cargar ejercicios:', error)
+  }
 })
 
 function formatearNivel(dificultad) {
