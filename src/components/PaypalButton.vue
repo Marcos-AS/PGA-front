@@ -10,7 +10,14 @@
 
   export default {
     mounted() {
+      console.log('PaypalButton montado');
       this.loadPaypalScript();
+    },
+
+    updated() {
+      if (document.getElementById("paypal-button-container")?.children.length === 0) {
+        this.renderPaypalButton();
+      }
     },
 
     data() {

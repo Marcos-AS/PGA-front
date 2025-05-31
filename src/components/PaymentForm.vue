@@ -44,7 +44,7 @@
                 const token = await this.$auth0.getAccessTokenSilently();
                 console.log(token);
                 
-                return fetch("http://localhost:6060/api/v1/mercadopago/preference", {
+                return fetch("/api/v1/mercadopago/preference", {
                   method: "POST",
                   headers: { 
                     "Content-Type": "application/json",

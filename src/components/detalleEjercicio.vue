@@ -39,7 +39,9 @@ import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRoute } from 'vue-router'
 import router from '@/router'
+import { useAuth0 } from '@auth0/auth0-vue'
 
+const { getAccessTokenSilently } = useAuth0()
 const ejercicio = ref({
   titulo: '',
   descripcion: '',
@@ -50,6 +52,7 @@ const cargando = ref(true)
 
 const route = useRoute()
 const ejercicioId = route.params.id || 1
+
 
 async function cargarEjercicio() {
   try {
@@ -66,9 +69,22 @@ async function enviarRespuesta() {
   mensaje.value = 'Corrigiendo respuesta...'
 
   try {
-    const res = await axios.post(`/api/ejercicios/${ejercicioId}/resolver`, {
+    const token = await getAccessTokenSilently({})
+    console.log("Payload:", {
+      idEjercicio: Number(ejercicioId),
       codigo: respuesta.value,
+    });
+
+    const res = await axios.post(`/api/corregir`, {
+      idEjercicio: ejercicioId,
+      codigo: respuesta.value,
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
     })
+      
 
     sessionStorage.setItem('correccionResultado', JSON.stringify(res.data))
 
