@@ -23,6 +23,8 @@ onMounted(async () => {
   try {
     const response = await axios.get(`/api/modulos/${moduloId}`)
     modulo.value = response.data
+    console.log("Módulo cargado:", response.data);
+    
   } catch (error) {
     console.error("Error al cargar módulo:", error)
     router.push('/404')
@@ -30,7 +32,7 @@ onMounted(async () => {
 })
 
 // Computar el enlace al curso
-const cursoUrl = computed(() => `/curso/${encodeURIComponent(modulo.value.cursoTitulo)}`)
+const cursoUrl = computed(() => `/curso/${encodeURIComponent(modulo.value.idCurso)}`)
 </script>
 
 <template>
@@ -53,7 +55,7 @@ const cursoUrl = computed(() => `/curso/${encodeURIComponent(modulo.value.cursoT
     ></iframe> -->
 
     <div class="botones-modulo">
-      <RouterLink :to="`/modulo/${modulo.id}/Ejerciciosview`" class="btn-ver-ejercicios">
+      <RouterLink :to="`/modulo/${modulo.id}/ejercicios`" class="btn-ver-ejercicios">
         Ver ejercicios del módulo
       </RouterLink>
 

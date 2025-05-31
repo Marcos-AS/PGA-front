@@ -13,11 +13,14 @@ export default {
             },
             token: "",
             mensajeConfirmacion: "",
+            cargando: false
         };
     },
 
     methods: {
         async enviarForm() {
+            this.cargando = true;
+            this.mensajeConfirmacion = "Creando curso...";
             try {
                 const token = await this.$auth0.getAccessTokenSilently({
                     audience: 'https://PGAD-SIP.unlu.com',
@@ -34,12 +37,15 @@ export default {
                 console.log("Curso creado", response.data);
 
                 const cursoId = response.data.id;
+                const titulo = response.data.titulo;
 
                 this.mensajeConfirmacion = "¡Curso creado con éxito!";
 
                 setTimeout(() => {
-                    this.$router.push({ name: 'detalleCurso', params: { id: cursoId } });
-                }, 1500);
+                    this.$router.push({ name: 'detalleCurso', params: { 
+                        id: cursoId,
+                         titulo: titulo} });
+                }, 2000);
 
             } catch (error) {
                 console.error("error al crear: ", error);
@@ -56,6 +62,9 @@ export default {
 <template>
     <form @submit.prevent="enviarForm" class="formulario-curso">
         <h2>Contanos sobre que te gustaría aprender</h2>
+
+        <label for="titulo">Dale un nombre al curso:</label>
+        <input type="text" id="titulo" v-model="curso.titulo" required />
 
         <label for="categorias">Selecciona la(s) categoría(s):</label>
         <select id="categorias" v-model="curso.categorias" multiple>
@@ -83,7 +92,7 @@ export default {
             <option value="avanzado">Avanzado</option>
         </select>
         <input type="submit" value="Crear curso" />
-
+        
         <p v-if="mensajeConfirmacion" class="mensaje-confirmacion">{{ mensajeConfirmacion }}</p>
     </form>
 </template>
@@ -154,7 +163,7 @@ input[type="submit"] {
 
 .mensaje-confirmacion {
     margin-top: 1rem;
-    color: red;
+    color: #1AA179;
     font-weight: bold;
     text-align: center;
 }

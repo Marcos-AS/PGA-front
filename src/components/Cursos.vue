@@ -22,7 +22,7 @@
       async getCursos() {
         try {
           const respuesta = await axios.get('/api/cursos');
-          console.log(respuesta.data);
+          console.log("cursos: ", respuesta.data);
           this.cursos = respuesta.data;
         } catch (error) {
           console.error('Error al obtener cursos:', error);
@@ -44,7 +44,7 @@
           <RouterLink
             v-for="curso in cursos"
             :key="curso.titulo"
-            :to="`/curso/${encodeURIComponent(curso.titulo)}`"
+            :to="`/cursos/${encodeURIComponent(curso.id)}/${encodeURIComponent(curso.titulo)}`"
             class="curso-card"
           >
             <h4>{{ curso.titulo }}</h4>

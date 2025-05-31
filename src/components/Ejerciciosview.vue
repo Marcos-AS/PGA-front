@@ -52,7 +52,7 @@ onMounted(async () => {
   }
 
   try {
-    const res = await axios.get(`/api/modulos/${moduloId}/ejercicios`)
+    const res = await axios.get(`/api/ejercicios?moduloId=${moduloId}`)
     if (Array.isArray(res.data)) {
       ejercicios.value = res.data
     } else {

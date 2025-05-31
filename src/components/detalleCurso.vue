@@ -10,12 +10,6 @@
 
     <section class="curso-box">
       <p><strong>Descripción:</strong> {{ curso.descripcion }}</p>
-
-      <p><strong>Temario:</strong></p>
-      <ul>
-        <li v-for="(item, index) in temarioItems" :key="index">{{ item }}</li>
-      </ul>
-
       <p><strong>Nivel:</strong> {{ curso.nivel }}</p>
       <p><strong>Duración:</strong> {{ curso.duracion }}</p>
     </section>
@@ -59,22 +53,18 @@ interface Curso {
 const curso = ref<Curso | null>(null)
 
 const route = useRoute()
+const id = parseInt(route.params.id as string, 10)
+console.log('ID del curso:', id);
+
 const titulo = decodeURIComponent(route.params.titulo as string)
 
 
 onMounted(async () => {
   try {
-    const response = await fetch(`/api/cursos?titulo=${encodeURIComponent(titulo)}`)
+    const response = await fetch(`/api/cursos/${encodeURIComponent(id)}`)
     const data = await response.json()
     console.log('Respuesta de la API:', data)
-
-    if (Array.isArray(data)) {
-      curso.value = data[0] ?? null
-    } else if (data.cursos) {
-      curso.value = data.cursos[0] ?? null
-    } else {
-      curso.value = null
-    }
+    curso.value = data
 
   } catch (error) {
     console.error('Error cargando curso:', error)
