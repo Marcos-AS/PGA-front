@@ -9,18 +9,51 @@
       <section class="seccion-enunciado">
         <h1 class="titulo-ejercicio">{{ ejercicio.titulo }}</h1>
         <p class="descripcion-ejercicio">{{ ejercicio.descripcion }}</p>
-
       </section>
+
+      <div v-if="cargando" class="cargando">
+      Cargando ejercicio…
+    </div>
+
+      <section
+      v-else-if="casoPruebaSeleccionado"
+      class="seccion-ejemplo-test"
+    >
+      <h2>Ejemplo de prueba</h2>
+
+      <!-- Entrada del test -->
+      <div class="bloque-test">
+        <h3>Entrada:</h3>
+        <!-- 
+          Usamos <pre> para conservar saltos de línea. 
+          Si tu entrada es muy larga, ajusta con CSS (scroll, etc.).
+        -->
+        <pre class="entrada-test">{{ casoPruebaSeleccionado.entrada }}</pre>
+      </div>
+
+      <!-- Salida esperada del test -->
+      <div class="bloque-test">
+        <h3>Salida esperada:</h3>
+        <pre class="salida-test">
+{{ casoPruebaSeleccionado.salidaEsperada }}
+        </pre>
+      </div>
+    </section>
+
+    <!-- Si ya se cargó pero NO hay tests definidos -->
+    <section v-else class="sin-tests">
+      <p>No hay casos de prueba disponibles para este ejercicio.</p>
+    </section>
+
       <!-- Input de código -->
       <section class="seccion-codigo">
         <label for="codigo" class="label-codigo">Escribí tu código:</label>
-        <textarea
-          id="codigo"
-          v-model="respuesta"
-          class="area-codigo"
-          rows="12"
-          placeholder="// Escribe tu solución acá..."
-        ></textarea>
+        <MonacoEditor
+          v-model:value="code"
+          :language="ejercicio.categorias?.[0]?.nombre?.toLowerCase() || 'javascript'"
+          theme="vs-dark"
+          height="400"
+        />
       </section>
 
       <!-- Botón enviar -->
@@ -40,12 +73,34 @@ import axios from 'axios'
 import { useRoute } from 'vue-router'
 import router from '@/router'
 import { useAuth0 } from '@auth0/auth0-vue'
+import MonacoEditor from 'monaco-editor-vue3'
 
 const { getAccessTokenSilently } = useAuth0()
-const ejercicio = ref({
+
+interface TestEjercicio {
+  entrada: string
+  salidaEsperada: string
+}
+
+interface Categoria {
+  id: number
+  nombre: string
+}
+
+interface Ejercicio {
+  titulo: string
+  descripcion: string
+  categorias: Categoria[]
+  tests: TestEjercicio[]
+}
+
+const ejercicio = ref<Ejercicio>({
   titulo: '',
   descripcion: '',
+  categorias: [],
+  tests: []
 })
+
 const respuesta = ref('')
 const mensaje = ref('')
 const cargando = ref(true)
@@ -53,15 +108,27 @@ const cargando = ref(true)
 const route = useRoute()
 const ejercicioId = route.params.id || 1
 
+let casoPruebaSeleccionado = ref<TestEjercicio | null>(null)
 
 async function cargarEjercicio() {
   try {
     const res = await axios.get(`/api/ejercicios/${ejercicioId}`)
-    ejercicio.value = res.data
-  } catch (error) {
-    console.error('Error al obtener el ejercicio:', error)
-  } finally {
+    // Suponemos que el endpoint devuelve un objeto JSON que coincide con EjercicioDTO,
+    // incluyendo un arreglo "tests" con cada TestEjercicioDTO serializado correctamente.
+    ejercicio.value = res.data as Ejercicio
+
+    // Si existe al menos un test, lo guardamos en casoPruebaSeleccionado
+    if (ejercicio.value.tests && ejercicio.value.tests.length > 0) {
+      casoPruebaSeleccionado.value = ejercicio.value.tests[0]
+    }
+
+    console.log("categorias: ", ejercicio.value.categorias);
+    
+
     cargando.value = false
+  } catch (err) {
+    console.error('Error al cargar el ejercicio:', err)
+    mensaje.value = 'No se pudo cargar el ejercicio.'
   }
 }
 
@@ -75,9 +142,9 @@ async function enviarRespuesta() {
       codigo: respuesta.value,
     });
 
-    const res = await axios.post(`/api/corregir`, {
-      idEjercicio: ejercicioId,
-      codigo: respuesta.value,
+    const res = await axios.post("/api/corregir", {
+      "idEjercicio": ejercicioId,
+      "codigo": respuesta.value,
     }, {
       headers: {
         'Content-Type': 'application/json',
@@ -85,10 +152,10 @@ async function enviarRespuesta() {
       },
     })
       
-
-    sessionStorage.setItem('correccionResultado', JSON.stringify(res.data))
-
+    
     router.push(`/correccion/${ejercicioId}`)
+    sessionStorage.setItem('correccionResultado', JSON.stringify(res.data))
+    console.log('Respuesta corregida:', res.data)
   } catch (error) {
     console.error('Error al enviar la respuesta:', error)
     mensaje.value = 'Error al enviar la respuesta.'

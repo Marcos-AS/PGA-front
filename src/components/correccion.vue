@@ -3,9 +3,11 @@
     <h2>Corrección del ejercicio</h2>
 
     <div v-if="resultado">
-      <p class="texto-correccion">{{ resultado.resultado }}</p>
-      <p class="estado" :class="{ correcto: resultado.correcto, incorrecto: !resultado.correcto }">
-        {{ resultado.correcto ? '✔ ¡Respuesta correcta!' : '✘ Respuesta incorrecta' }}
+      <p class="estado" :class="{ correcto: resultado.success, incorrecto: !resultado.success }">
+        {{ resultado.success ? '✔ ¡Respuesta correcta!' : '✘ Respuesta incorrecta' }}
+      </p>
+      <p v-if="resultado.error">
+        <strong>Error:</strong> {{ resultado.error }}
       </p>
     </div>
 
@@ -16,12 +18,19 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 
-const resultado = ref<{ resultado: string; correcto: boolean } | null>(null)
+interface CorreccionResponse {
+  success: boolean
+  output: string
+  error: string
+}
+
+const resultado = ref<CorreccionResponse | null>(null)
 
 onMounted(() => {
   const data = sessionStorage.getItem('correccionResultado')
   if (data) {
-    resultado.value = JSON.parse(data)
+    resultado.value = JSON.parse(data) as CorreccionResponse
+    console.log("Resultado cargado: ", resultado.value)
   }
 })
 </script>
