@@ -1,9 +1,31 @@
 <script setup lang="ts">
 import { useAuth0 } from "@auth0/auth0-vue";
+import { onMounted } from "vue";
+import axios from 'axios';
 import { ref } from "vue";
 import { RouterLink, RouterView } from "vue-router";
 
 const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
+
+  onMounted(async () => {
+  if (isAuthenticated.value && user.value) {
+    try {
+      //si el usuario inicia sesión, se registra en nuestra bd
+      await axios.post("/api/usuarios", {
+        id: user.value.sub,
+        nombre: user.value.name,
+        correo: user.value.email,
+      });
+      console.log("Usuario registrado en la base de datos");
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 409) {
+        console.log("El usuario ya estaba registrado");
+      } else {
+        console.error("Error al registrar usuario:", error);
+      }
+    }
+  }
+});
 
     async function enviar() {
       console.log("Método enviar() activado con prompt:", this.prompt);

@@ -8,6 +8,8 @@
       :alt="`Imagen del curso ${curso.titulo}`"
     />
 
+    <button @click="iniciarProgreso">Iniciar curso</button>
+
     <section class="curso-box">
       <p><strong>Descripción:</strong> {{ curso.descripcion }}</p>
       <p><strong>Nivel:</strong> {{ curso.nivel }}</p>
@@ -34,6 +36,9 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
+import axios from 'axios'
+import { useAuth0 } from '@auth0/auth0-vue'
+const { user, isAuthenticated, getAccessTokenSilently } = useAuth0()
 
 interface Curso {
   titulo: string
@@ -49,56 +54,76 @@ interface Curso {
   }[]
 }
 
+
+interface Progreso{
+  id: number | null,
+  curso: {
+    id: number
+  },
+  usuario: {
+    id: number
+  },
+  porcentajeCompletado: number,
+  fechaActualizacion: string
+}
+
+
 // 2. Crear ref con tipo adecuado
 const curso = ref<Curso | null>(null)
 
 const route = useRoute()
-const id = parseInt(route.params.id as string, 10)
-console.log('ID del curso:', id);
+const idCurso = parseInt(route.params.id as string, 10)
+console.log('ID del curso:', idCurso);
 
 const titulo = decodeURIComponent(route.params.titulo as string)
 
-
 onMounted(async () => {
   try {
-    const response = await fetch(`/api/cursos/${encodeURIComponent(id)}`)
+    const response = await fetch(`/api/cursos/${encodeURIComponent(idCurso)}`)
     const data = await response.json()
     console.log('Respuesta de la API:', data)
     curso.value = data
 
   } catch (error) {
     console.error('Error cargando curso:', error)
-    //curso.value = null
-
-     // Datos simulados para prueba
-    /*curso.value = {
-      titulo: 'Curso de Programación en Python (Simulado)',
-      descripcion: 'Este es un curso simulado para mostrar datos de prueba mientras el backend no responde.',
-      imagen: 'https://via.placeholder.com/600x300?text=Curso+Simulado',
-      duracion: '8 semanas',
-      nivel: 'Intermedio',
-      temario: 'Temas simulados',
-      modulos: [
-    {
-      id: 1,
-      titulo: 'Módulo 1: Fundamentos de Python',
-      descripcion: 'Aprenderás la sintaxis básica y estructuras fundamentales del lenguaje.'
-    },
-    {
-      id: 2,
-      titulo: 'Módulo 2: Programación Orientada a Objetos',
-      descripcion: 'Explorarás clases, objetos, herencia y encapsulamiento en Python.'
-    },
-    {
-      id: 3,
-      titulo: 'Módulo 3: Librerías y Buenas Prácticas',
-      descripcion: 'Verás cómo usar librerías populares como NumPy, y adoptar un estilo de código limpio.'
-    }
-    ]
-    }*/
   }
 
 })
+
+async function iniciarProgreso() {
+  if (!isAuthenticated.value || !user.value) {
+    console.error('Usuario no autenticado')
+    return
+  }
+
+  const idUsuario = user.value.sub
+  const token = await getAccessTokenSilently({})
+
+  axios.post('/api/progresos', {
+    id: null,
+    curso: {
+      id: idCurso,
+    },
+    usuario: {
+      id: idUsuario
+    },
+    porcentajeCompletado: 0.0,
+    fechaActualizacion: new Date().toISOString(),
+    },
+    {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+  .then(response => {
+    console.log('Progreso iniciado:', response.data)
+    window.location.href = `/modulo/${curso.value?.modulos?.[0].id}`
+  })
+  .catch(error => {
+    console.error("error: ", error);
+  })
+}
 
 
 // Separar temario por líneas
