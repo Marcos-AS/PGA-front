@@ -35,10 +35,12 @@
 
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 import { useAuth0 } from '@auth0/auth0-vue'
-const { user, isAuthenticated, getAccessTokenSilently } = useAuth0()
+const { getAccessTokenSilently, user: authUser, isAuthenticated } = useAuth0()
+const router = useRouter()
+
 
 interface Curso {
   titulo: string
@@ -91,12 +93,12 @@ onMounted(async () => {
 })
 
 async function iniciarProgreso() {
-  if (!isAuthenticated.value || !user.value) {
+  if (!isAuthenticated.value || !authUser.value) {
     console.error('Usuario no autenticado')
     return
   }
 
-  const idUsuario = user.value.sub
+  const idUsuario = authUser.value.sub
   const token = await getAccessTokenSilently({})
 
   axios.post('/api/progresos', {
@@ -118,7 +120,8 @@ async function iniciarProgreso() {
     })
   .then(response => {
     console.log('Progreso iniciado:', response.data)
-    window.location.href = `/modulo/${curso.value?.modulos?.[0].id}`
+    //window.location.href = `/modulo/${curso.value?.modulos?.[0].id}`
+    router.push(`/modulo/${curso.value?.modulos?.[0].id}`)
   })
   .catch(error => {
     console.error("error: ", error);
