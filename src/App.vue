@@ -1,18 +1,14 @@
-<script lang="ts">
-import PaymentForm from "./components/PaymentForm.vue";
-import PaypalButton from "./components/PaypalButton.vue";
+<script setup lang="ts">
+import { useAuth0 } from "@auth0/auth0-vue";
+import { ref } from "vue";
+import { RouterLink, RouterView } from "vue-router";
 
-export default {
-  components: {
-    PaypalButton,
-    PaymentForm
-  },
+const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
-  methods: {
-    async enviar() {
+    async function enviar() {
       console.log("Método enviar() activado con prompt:", this.prompt);
 
-      const res = await fetch("http://localhost:8080/api/llama", {
+      const res = await fetch("/api/llama", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -23,17 +19,18 @@ export default {
 
       const text = await res.text();
       this.resp = text;
-    },
+    }
 
-    login() {
-      this.$auth0.loginWithRedirect({
-        authorizationParams: {
-          prompt: 'consent'
-        }
+    function login() {
+      loginWithRedirect({
+        authorizationParams: { prompt: "consent" }
       });
     }
-  }
+
+function doLogout() {
+  logout({ logoutParams: { returnTo: window.location.origin } });
 }
+  
 </script>
 
 <template>
@@ -47,7 +44,9 @@ export default {
           <RouterLink to="/suscripciones">Suscripciones</RouterLink>
           <RouterLink to="/cursos">Cursos</RouterLink>
           <RouterLink to="/perfil">Perfil</RouterLink>
-          <button @click="login" class="login-btn">Iniciar Sesión</button>
+          <button v-if="!isAuthenticated" @click="login" class="login-btn">Iniciar Sesión</button>
+          <button v-else @click="doLogout" class="login-btn">Cerrar sesión</button>
+          <p v-if="isAuthenticated">Hola usuario {{ user?.sub }}</p>
           <div class="menu-icon">☰</div>
         </nav>
       </header>
