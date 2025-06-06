@@ -6,7 +6,6 @@
 
     <div v-else-if="isAuthenticated">
       <h2>Perfil del usuario</h2>
-
       <div>
         <button @click="logout" class="btn-logout">Cerrar sesión</button>
       </div>
@@ -71,9 +70,55 @@
           <!-- Mi progreso -->
           <div class="perfil-card">
             <h3>Mi progreso</h3>
-            <ul>
-              <li>Nivel</li>
-              <li>Progreso</li>
+
+            <div v-if="progresos.length === 0">
+              <p>No hay registros de progreso aún.</p>
+            </div>
+
+            <ul v-else class="lista-progresos">
+              <li v-for="pro in progresos" :key="pro.id" class="item-progreso">
+                <div class="info-curso">
+                  <strong>{{ pro.curso.nombre }}</strong>
+                  <span class="fecha">
+                    {{ new Date(pro.fechaActualizacion).toLocaleDateString() }}
+                  </span>
+                </div>
+
+                <div class="avance-progreso">
+                  <template v-if="editingProgresoId === pro.id">
+                    <input
+                      type="number"
+                      v-model.number="editableProgresoValue"
+                      min="0"
+                      max="100"
+                    />
+                    <button @click="saveProgreso(pro.id)" class="btn-save">
+                      💾
+                    </button>
+                    <button @click="cancelEditProgreso()" class="btn-cancel">
+                      ✖
+                    </button>
+                  </template>
+                  <template v-else>
+                    <span>{{ pro.porcentajeCompletado }}%</span>
+                    <button
+                      @click="startEditingProgreso(pro)"
+                      title="Editar porcentaje"
+                    >
+                      ✎
+                    </button>
+                  </template>
+                </div>
+
+                <!--
+                <div class="barra-contenedor">
+                  <div
+                    class="barra-avance"
+                    :style="{ width: pro.porcentajeCompletado + '%' }"
+                  ></div>
+                </div>
+                -->
+              </li>
             </ul>
           </div>
 
@@ -105,6 +150,8 @@
 </template>
 
 <script lang="ts">
+import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -117,7 +164,20 @@ export default {
         email: this.$auth0.user?.email || '',
         password: '',
       },
+      progresos: [] as Array<{
+        id: number;
+        curso: { id: number; nombre: string };
+        porcentajeCompletado: number;
+        fechaActualizacion: string;
+      }>,
+      editingProgresoId: null as number | null,
+      editableProgresoValue: 0 as number,
     };
+  },
+  mounted() {
+    if (this.isAuthenticated) {
+      this.fetchProgresos();
+    }
   },
   methods: {
     logout() {
@@ -132,10 +192,73 @@ export default {
     },
     saveField(field: string) {
       // Lo edita local, agregar lógica real con API
-      this.user[field] = this.editableValues[field];
-      this.editingField = '';
+      ;(this.user as unknown)[field] = this.editableValues[field]
+      this.editingField = ''
+    },
+
+    // ────────────── MÉTODOS PARA PROGRESO ──────────────
+
+    async fetchProgresos() {
+      try {
+        // Suponemos que 'sub' coincide con idUsuario en backend
+        const userIdBackend = (this.user as unknown).sub
+        const response = await axios.get('/api/progresos', {
+          params: { idUsuario: userIdBackend },
+        })
+        this.progresos = response.data.map((p: unknown) => ({
+          id: p.id,
+          curso: {
+            id: p.curso.id,
+            nombre: p.curso.nombre || p.curso.titulo || 'Sin título',
+          },
+          porcentajeCompletado: p.porcentajeCompletado,
+          fechaActualizacion: p.fechaActualizacion,
+        }))
+      } catch (error) {
+        console.error('Error al cargar progresos:', error)
+      }
+    },
+
+    startEditingProgreso(progreso: {
+      id: number
+      porcentajeCompletado: number
+    }) {
+      this.editingProgresoId = progreso.id
+      this.editableProgresoValue = progreso.porcentajeCompletado
+    },
+
+    async saveProgreso(progresoId: number) {
+      try {
+        // Buscamos el curso asociado
+        const prog = this.progresos.find((p) => p.id === progresoId)!
+        const dto = {
+          id: progresoId,
+          curso: { id: prog.curso.id },
+          Usuario: { id: (this.user as unknown).sub },
+          porcentajeCompletado: this.editableProgresoValue,
+          // omitimos fechaActualizacion para que el backend la ponga automáticamente
+        }
+        const response = await axios.put(`/api/progresos/${progresoId}`, dto)
+        // Actualizamos locally
+        const idx = this.progresos.findIndex((p) => p.id === progresoId)
+        if (idx !== -1) {
+          this.progresos[idx].porcentajeCompletado =
+            response.data.porcentajeCompletado
+          this.progresos[idx].fechaActualizacion =
+            response.data.fechaActualizacion
+        }
+        this.editingProgresoId = null
+        this.editableProgresoValue = 0
+      } catch (error) {
+        console.error('Error al guardar progreso:', error)
+      }
+    },
+
+    cancelEditProgreso() {
+      this.editingProgresoId = null
+      this.editableProgresoValue = 0
     },
   },
-};
+}
 </script>
 

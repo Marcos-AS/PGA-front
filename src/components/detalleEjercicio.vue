@@ -24,8 +24,8 @@
         <!-- Entrada del test -->
         <div class="bloque-test">
           <h3>Entrada:</h3>
-          <!-- 
-            Usamos <pre> para conservar saltos de línea. 
+          <!--
+            Usamos <pre> para conservar saltos de línea.
             Si tu entrada es muy larga, ajusta con CSS (scroll, etc.).
           -->
           <pre class="entrada-test">{{ casoPruebaSeleccionado.entrada }}</pre>
@@ -75,7 +75,7 @@
   import { useAuth0 } from '@auth0/auth0-vue'
   import MonacoEditor from 'monaco-editor-vue3'
 
-  const { getAccessTokenSilently } = useAuth0()
+  const { getAccessTokenSilently, user: authUser } = useAuth0()
 
   interface TestEjercicio {
     entrada: string
@@ -88,17 +88,21 @@
   }
 
   interface Ejercicio {
+    id: number
     titulo: string
     descripcion: string
     categorias: Categoria[]
     tests: TestEjercicio[]
+    cursoId: number
   }
 
   const ejercicio = ref<Ejercicio>({
+    id: 0,
     titulo: '',
     descripcion: '',
     categorias: [],
-    tests: []
+    tests: [],
+    cursoId:0,
   })
 
   const code = ref('')
@@ -109,6 +113,8 @@
   const ejercicioId = route.params.id || 1
 
   let casoPruebaSeleccionado = ref<TestEjercicio | null>(null)
+
+  const ejerciciosCompletadosLocal = ref(0)
 
   async function cargarEjercicio() {
     try {
@@ -123,7 +129,7 @@
       }
 
       console.log("categorias: ", ejercicio.value.categorias);
-      
+
 
       cargando.value = false
     } catch (err) {
@@ -151,11 +157,96 @@
           'Authorization': `Bearer ${token}`,
         },
       })
-        
-      
+
+          // 4.3) Ahora ya tengo res.data.success. Si es true, actualizo el progreso.
+    if (res.data.success) {
+      // 4.3.a) Tomo el userId de Auth0
+      if (!authUser.value || typeof (authUser.value as any).sub !== 'string') {
+        console.error('No hay usuario logueado o no tiene sub.')
+      } else {
+        const userId = (authUser.value as any).sub
+
+        // 4.3.b) Ya que no hay totalEjerciciosDelCurso en la BD, lo hardcodeamos en 9:
+        const cursoId = ejercicio.value.cursoId
+        const total = 9
+
+        // 4.3.c) BUSCAR si ya existe un Progreso para (userId, cursoId)
+        let progresoExistente: any = null
+        try {
+          const respGet = await axios.get('/api/progresos', {
+            params: { idUsuario: userId, idCurso: cursoId },
+            headers: { Authorization: `Bearer ${token}` }
+          })
+          if (Array.isArray(respGet.data) && respGet.data.length > 0) {
+            progresoExistente = respGet.data[0]
+          }
+        } catch (err) {
+          console.error('Error al buscar Progreso existente:', err)
+        }
+
+        // 4.3.d) Si no existe, lo CREO con porcentaje 0
+        let progresoActual: any = progresoExistente
+        if (!progresoExistente) {
+          try {
+            const dtoCrear = {
+              curso: { id: cursoId },
+              usuario: { id: userId },
+              porcentajeCompletado: 0,
+            }
+            const respPost = await axios.post('/api/progresos', dtoCrear, {
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },})
+            progresoActual = respPost.data
+            ejerciciosCompletadosLocal.value = 0
+          } catch (err) {
+            console.error('Error al crear Progreso inicial:', err)
+          }
+        } else {
+          // Si ya existía, inicializo el contador local en 0 (o podrías calcularlo desde el backend)
+          ejerciciosCompletadosLocal.value = 0
+        }
+
+        // 4.3.e) Incremento el contador local
+        ejerciciosCompletadosLocal.value++
+
+        // 4.3.f) Calculo el nuevo porcentaje sobre 9
+        const porcentaje = parseFloat(
+          ((ejerciciosCompletadosLocal.value / total) * 100).toFixed(2)
+        )
+
+        // 4.3.g) Hago PUT para actualizar el porcentaje en BD
+        if (progresoActual && progresoActual.id) {
+          try {
+            const dtoUpdate = {
+              id: progresoActual.id,
+              curso: { id: cursoId },
+              usuario: { id: userId },
+              porcentajeCompletado: porcentaje,
+            }
+            const respPut = await axios.put(
+              `/api/progresos/${progresoActual.id}`,
+              dtoUpdate, {
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            )
+            console.log('Progreso actualizado:', respPut.data)
+          } catch (err) {
+            console.error('Error al actualizar Progreso:', err)
+          }
+        }
+      }
+    }
+
       router.push(`/correccion/${ejercicioId}`)
       sessionStorage.setItem('correccionResultado', JSON.stringify(res.data))
       console.log('Respuesta corregida:', res.data)
+
+
     } catch (error) {
       console.error('Error al enviar la respuesta:', error)
       mensaje.value = 'Error al enviar la respuesta.'
