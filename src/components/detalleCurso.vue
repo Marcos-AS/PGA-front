@@ -121,7 +121,6 @@ async function iniciarProgreso() {
   .then(response => {
     console.log('Progreso iniciado:', response.data)
     sessionStorage.setItem('currentCursoId', String(idCurso))
-    //window.location.href = `/modulo/${curso.value?.modulos?.[0].id}`
     router.push(`/modulo/${curso.value?.modulos?.[0].id}`)
   })
   .catch(error => {

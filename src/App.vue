@@ -1,21 +1,31 @@
 <script setup lang="ts">
 import { useAuth0 } from "@auth0/auth0-vue";
-import { onMounted } from "vue";
+//import { onMounted } from "vue";
+import { watchEffect } from "vue";
 import axios from 'axios';
 import { ref } from "vue";
 import { RouterLink, RouterView } from "vue-router";
 
-const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
+const { user, isAuthenticated, loginWithRedirect, logout, getAccessTokenSilently } = useAuth0();
 
-  onMounted(async () => {
+  watchEffect(async () => {
   if (isAuthenticated.value && user.value) {
     try {
+      const token = await getAccessTokenSilently({})
       //si el usuario inicia sesión, se registra en nuestra bd
-      await axios.post("/api/usuarios", {
+      await axios.post("/api/usuarios", 
+      {
         id: user.value.sub,
         nombre: user.value.name,
         correo: user.value.email,
-      });
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      }  
+    );
       console.log("Usuario registrado en la base de datos");
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 409) {

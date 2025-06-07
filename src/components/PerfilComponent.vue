@@ -78,7 +78,7 @@
             <ul v-else class="lista-progresos">
               <li v-for="pro in progresos" :key="pro.id" class="item-progreso">
                 <div class="info-curso">
-                  <strong>{{ pro.curso.nombre }}</strong>
+                  <strong>{{ pro.curso.nombre }} - </strong>
                   <span class="fecha">
                     {{ new Date(pro.fechaActualizacion).toLocaleDateString() }}
                   </span>
