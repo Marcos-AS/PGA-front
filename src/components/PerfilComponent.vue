@@ -175,9 +175,15 @@ export default {
     };
   },
   mounted() {
-    if (this.isAuthenticated) {
-      this.fetchProgresos();
-    }
+    this.$watch(
+      () => this.isAuthenticated && this.user?.sub,
+      (val) => {
+        if (val) {
+          this.fetchProgresos();
+        }
+      },
+      { immediate: true }
+    );
   },
   methods: {
     logout() {

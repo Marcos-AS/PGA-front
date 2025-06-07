@@ -9,8 +9,12 @@ export default {
                 descripcion: "",
                 duracion: "",
                 nivel: "",
-                categorias: [] as string[]
+                categorias: [] as { id: number; nombre: string; tipo: string}[]
             },
+            listaCategorias: [
+                { id: 1, nombre: "Python", tipo: "LENGUAJE" },
+                { id: 3, nombre: "Java", tipo: "LENGUAJE" }
+            ],
             token: "",
             mensajeConfirmacion: "",
             cargando: false
@@ -26,6 +30,7 @@ export default {
                     audience: 'https://PGAD-SIP.unlu.com',
                     scope: 'create:course'
                 })
+                console.log("Curso a enviar:", JSON.stringify(this.curso, null, 2));
                 const response = await axios.post('/api/cursos', this.curso,
                     {
                         headers: {
@@ -35,7 +40,7 @@ export default {
                     }
                 );
                 console.log("Curso creado", response.data);
-
+                
                 const cursoId = response.data.id;
                 const titulo = response.data.titulo;
 
@@ -44,7 +49,7 @@ export default {
                 setTimeout(() => {
                     this.$router.push({ name: 'detalleCurso', params: { 
                         id: cursoId,
-                         titulo: titulo} });
+                        titulo: titulo} });
                 }, 2000);
 
             } catch (error) {
@@ -68,10 +73,10 @@ export default {
 
         <label for="categorias">Selecciona la(s) categoría(s):</label>
         <select id="categorias" v-model="curso.categorias" multiple>
-            <option value="1">Python</option>
-            <!-- En el futuro: más categorías con sus IDs reales -->
+            <option v-for="cat in listaCategorias" :key="cat.id" :value="cat">
+            {{ cat.nombre }}
+            </option>
         </select>
-
         <label for="descripcion">(opcional) Haz una descripción sobre qué quieres que incluya el curso</label>
         <textarea name="descripcion" id="descripcion" v-model="curso.descripcion"></textarea>
 
