@@ -142,7 +142,7 @@
     mensaje.value = 'Corrigiendo respuesta...'
 
     try {
-      const token = await getAccessTokenSilently({})
+      const token = await getAccessTokenSilently()
       console.log("Payload:", {
         idEjercicio: Number(ejercicioId),
         codigo: code.value,
@@ -167,7 +167,8 @@
         const userId = (authUser.value as any).sub
 
         // 4.3.b) Ya que no hay totalEjerciciosDelCurso en la BD, lo hardcodeamos en 9:
-        const cursoId = ejercicio.value.cursoId
+        const cursoId = Number(sessionStorage.getItem('currentCursoId'))
+
         const total = 9
 
         // 4.3.c) BUSCAR si ya existe un Progreso para (userId, cursoId)

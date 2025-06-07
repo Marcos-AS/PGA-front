@@ -93,6 +93,7 @@ onMounted(async () => {
 })
 
 async function iniciarProgreso() {
+
   if (!isAuthenticated.value || !authUser.value) {
     console.error('Usuario no autenticado')
     return
@@ -100,7 +101,6 @@ async function iniciarProgreso() {
 
   const idUsuario = authUser.value.sub
   const token = await getAccessTokenSilently({})
-
   axios.post('/api/progresos', {
     id: null,
     curso: {
@@ -120,6 +120,7 @@ async function iniciarProgreso() {
     })
   .then(response => {
     console.log('Progreso iniciado:', response.data)
+    sessionStorage.setItem('currentCursoId', String(idCurso))
     //window.location.href = `/modulo/${curso.value?.modulos?.[0].id}`
     router.push(`/modulo/${curso.value?.modulos?.[0].id}`)
   })
