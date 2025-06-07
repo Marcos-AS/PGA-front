@@ -1,30 +1,20 @@
 <script setup lang="ts">
 import { useAuth0 } from "@auth0/auth0-vue";
-//import { onMounted } from "vue";
 import { watchEffect } from "vue";
 import axios from 'axios';
-import { ref } from "vue";
 import { RouterLink, RouterView } from "vue-router";
 
-const { user, isAuthenticated, loginWithRedirect, logout, getAccessTokenSilently } = useAuth0();
+const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
   watchEffect(async () => {
   if (isAuthenticated.value && user.value) {
     try {
-      const token = await getAccessTokenSilently({})
       //si el usuario inicia sesión, se registra en nuestra bd
-      await axios.post("/api/usuarios", 
-      {
-        id: user.value.sub,
-        nombre: user.value.name,
-        correo: user.value.email,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
+      await axios.get("/api/usuarios/sincronizar", {
+        params: {
+          auth0Id: user.value.sub,
         }
-      }  
+      } 
     );
       console.log("Usuario registrado en la base de datos");
     } catch (error) {
@@ -37,21 +27,6 @@ const { user, isAuthenticated, loginWithRedirect, logout, getAccessTokenSilently
   }
 });
 
-    async function enviar() {
-      console.log("Método enviar() activado con prompt:", this.prompt);
-
-      const res = await fetch("/api/llama", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ prompt: this.prompt })
-      });
-      console.log(res);
-
-      const text = await res.text();
-      this.resp = text;
-    }
 
     function login() {
       loginWithRedirect({
@@ -101,7 +76,7 @@ function doLogout() {
             <a href="https://www.facebook.com" target="_blank">
               <img src="/src/assets/facebook-logo.png" alt="Facebook" class="icono-red">
             </a>
-            <a href="https://www.twitter.com" target="_blank">
+            <a href="https://x.com" target="_blank">
               <img src="/src/assets/x-icon.png" alt="Twitter" class="icono-red">
             </a>
           </div>
@@ -151,12 +126,6 @@ function doLogout() {
 
 /* CURSOS DESTACADOS */
 .cursos-section {
-  /*display: flex;
-  gap: 2rem;
-  padding: 2rem;
-  justify-content: center;
-  flex-wrap: wrap;*/
-
     display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -167,12 +136,6 @@ function doLogout() {
 
 
 .card {
-  /*flex: 1 1 300px;
-  padding: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 12px;
-  text-align: center;
-  background-color: #f9f9f9;*/
   width: 100%;
   max-width: 800px;
   padding: 1rem;
@@ -617,12 +580,6 @@ button {
   padding: 0.5rem 1rem;
 }
 
-/*div {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-}*/
-
 .container {
   width: 100%;
   max-width: 1200px;
@@ -630,12 +587,6 @@ button {
   padding: 0 2rem;
   box-sizing: border-box;
 }
-
-/*
-.section {
-  max-width: 1200px;
-  margin: 0 auto;
-} */
 
 .section {
   width: 100%;
