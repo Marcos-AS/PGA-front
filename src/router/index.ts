@@ -1,19 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import PerfilComponent from '@/components/PerfilComponent.vue'
-import Suscripcion from '@/components/Suscripcion.vue'
+import TipoSuscripcion from '@/components/TipoSuscripcion.vue'
 import HomePage from '@/components/HomePage.vue'
-import Cursos from '../components/Cursos.vue'
+import listaCursos from '../components/listaCursos.vue'
 import FormCreacion from '../components/FormCreacion.vue'
 import detalleCurso from '../components/detalleCurso.vue'
 import detalleModulo from '../components/detalleModulo.vue'
-import Ejerciciosview from '@/components/Ejerciciosview.vue'
+import EjerciciosView from '@/components/EjerciciosView.vue'
 import opcionesPago from '@/components/opcionesPago.vue'
 import confirmacion from '@/components/confirmacion.vue'
 import detalleEjercicio from '@/components/detalleEjercicio.vue'
-import Correccion from '@/components/correccion.vue'
-
-
-
+import CorreccionEjercicio from '@/components/correccionEjercicio.vue'
 
 const routes = [
   {
@@ -29,12 +26,12 @@ const routes = [
   {
     path: '/suscripciones',
     name: 'suscripciones',
-    component: Suscripcion,
+    component: TipoSuscripcion,
   },
   {
     path: '/cursos',
     name: 'Cursos',
-    component: Cursos,
+    component: listaCursos,
   },
   {
     path: '/cursos/:id/:titulo',
@@ -54,12 +51,12 @@ const routes = [
   {
     path: '/correccion/:id',
     name: 'Correccion',
-    component: Correccion,
+    component: CorreccionEjercicio,
   },
   {
     path: '/modulo/:id/ejercicios',
     name: 'EjerciciosModulo',
-    component: Ejerciciosview,
+    component: EjerciciosView,
   },
 
   {

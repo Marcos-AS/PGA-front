@@ -1,6 +1,7 @@
 <script lang="ts">
+import { useAuth0 } from '@auth0/auth0-vue';
 import axios from 'axios';
-
+const { getAccessTokenSilently } = useAuth0();
 export default {
     data() {
         return {
@@ -26,10 +27,7 @@ export default {
             this.cargando = true;
             this.mensajeConfirmacion = "Creando curso...";
             try {
-                const token = await this.$auth0.getAccessTokenSilently({
-                    audience: 'https://PGAD-SIP.unlu.com',
-                    scope: 'create:course'
-                })
+                const token = await getAccessTokenSilently({})
                 console.log("Curso a enviar:", JSON.stringify(this.curso, null, 2));
                 const response = await axios.post('/api/cursos', this.curso,
                     {

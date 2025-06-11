@@ -6,7 +6,16 @@
 </template>
   
   <script lang="ts">
-  import { useAuth0 } from '@auth0/auth0-vue';
+import { useAuth0 } from '@auth0/auth0-vue';
+
+  const { getAccessTokenSilently } = useAuth0();
+
+  
+  declare global {
+    interface Window {
+      paypal: any;
+    }
+  }
 
   export default {
     mounted() {
@@ -41,7 +50,6 @@
       },
       
       renderPaypalButton() {
-        const self = this;
 
         window.paypal.Buttons({
           style: {
@@ -53,12 +61,8 @@
 
           async createOrder() { //lo llama la sdk de paypal
             try {              
-              const token = await self.$auth0.getAccessTokenSilently({
-                audience: 'https://PGAD-SIP.unlu.com',
-                scope: 'create:order capture:order'
-              });
+              const token = await getAccessTokenSilently({});
               console.log(token);
-              self.token = token;
 
               const response = await fetch("/api/paypal/orders", {
                 method: "POST",
@@ -79,18 +83,22 @@
             }
           },
 
-          async onApprove(data, actions) {
+          async onApprove(data: {orderID: string }) {
+            const token = await getAccessTokenSilently({});
             const response = await fetch(`/api/paypal/orders/${data.orderID}/capture`, {
               method: "POST",
               headers: { 
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${self.token}`
+                "Authorization": `Bearer ${token}`
               },
             });
   
             const orderData = await response.json();
             const transaction = orderData?.purchase_units?.[0]?.payments?.captures?.[0];
-            document.querySelector("#result-message").innerHTML = `Transacción ${transaction.status}: ${transaction.id}`;
+            const messageElement = document.querySelector("#result-message");
+            if(messageElement) {
+              messageElement.innerHTML = `Transacción ${transaction.status}: ${transaction.id}`;
+            };
           },
         }).render("#paypal-button-container");
       },

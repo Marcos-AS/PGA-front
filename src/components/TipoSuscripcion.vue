@@ -9,7 +9,7 @@
 
     data() {
         return {
-            suscripciones: [],
+            suscripciones: [] as Suscripcion[],
 
         }
     },
@@ -21,19 +21,7 @@
             this.suscripciones = respuesta.data;
         },
 
-        // getSuscripciones() {
-        //     // Simulando respuesta de backend
-        //     this.suscripciones = [
-        //       {
-        //         id: 1,
-        //         tipoSuscripcion: "Plan Premium",
-        //         precio: 2500,
-        //       },
-        //       // Podés agregar más si los necesitás
-        //     ];
-        // },
-
-        confirmarSuscripcion(suscripcion) {
+        confirmarSuscripcion(suscripcion: Suscripcion) {
           this.$router.push({ name: 'pago', query: { planId: suscripcion.id } });
         }
     },

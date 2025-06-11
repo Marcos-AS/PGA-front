@@ -1,11 +1,11 @@
 <script lang="ts">
-/*const cursos = [
-  {
-    titulo: "Programación en Python",
-    descripcion: "Aprendé desde lo básico hasta temas avanzados de Python.",
-  },
-];*/
   import axios from 'axios';
+
+  type Curso = {
+    id: number;
+    titulo: string;
+    descripcion: string;
+  }
 
   export default {
     mounted() {
@@ -14,7 +14,7 @@
 
     data() {
       return {
-        cursos: [],
+        cursos: [] as Curso[],
       };
     },
 
