@@ -6,26 +6,29 @@ import { RouterLink, RouterView } from "vue-router";
 
 const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
-  watchEffect(async () => {
+watchEffect(async () => {
   if (isAuthenticated.value && user.value) {
     try {
-      //si el usuario inicia sesión, se registra en nuestra bd
-      await axios.get("/api/usuarios/sincronizar", {
+      const response = await axios.get("/api/usuarios/sincronizar", {
         params: {
           auth0Id: user.value.sub,
         }
-      } 
-    );
-      console.log("Usuario registrado en la base de datos");
+      });
+      console.log("Usuario registrado en la base de datos:", response.data);
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 409) {
-        console.log("El usuario ya estaba registrado");
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 409) {
+          console.log("⚠️ El usuario ya estaba registrado");
+        } else {
+          console.error("❌ Error al registrar usuario:", error.response?.data || error.message);
+        }
       } else {
-        console.error("Error al registrar usuario:", error);
+        console.error("❌ Error desconocido al registrar usuario:", error);
       }
     }
   }
 });
+
 
 
     function login() {
@@ -37,7 +40,7 @@ const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
 function doLogout() {
   logout({ logoutParams: { returnTo: window.location.origin } });
 }
-  
+
 </script>
 
 <template>

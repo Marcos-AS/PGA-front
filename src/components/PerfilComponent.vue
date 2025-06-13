@@ -76,50 +76,23 @@
             </div>
 
             <ul v-else class="lista-progresos">
-              <li v-for="pro in progresos" :key="pro.id" class="item-progreso">
-                <div class="info-curso">
-                  <strong>{{ pro.curso.nombre }} - </strong>
-                  <span class="fecha">
-                    {{ new Date(pro.fechaActualizacion).toLocaleDateString() }}
-                  </span>
-                </div>
+  <li
+    v-for="pro in visibleProgresos"
+    :key="pro.id"
+    class="item-progreso"
+  >
+    <div class="info-curso">
+      <strong>{{ pro.curso.nombre }}</strong> <br>
+      <span class="fecha">
+        {{ formatDate(pro.fechaActualizacion) }}
+      </span>
+    </div>
+    <div class="avance-progreso">
+      <span>{{ pro.porcentajeCompletado }}%</span>
+    </div>
+  </li>
+</ul>
 
-                <div class="avance-progreso">
-                  <template v-if="editingProgresoId === pro.id">
-                    <input
-                      type="number"
-                      v-model.number="editableProgresoValue"
-                      min="0"
-                      max="100"
-                    />
-                    <button @click="saveProgreso(pro.id)" class="btn-save">
-                      💾
-                    </button>
-                    <button @click="cancelEditProgreso()" class="btn-cancel">
-                      ✖
-                    </button>
-                  </template>
-                  <template v-else>
-                    <span>{{ pro.porcentajeCompletado }}%</span>
-                    <button
-                      @click="startEditingProgreso(pro)"
-                      title="Editar porcentaje"
-                    >
-                      ✎
-                    </button>
-                  </template>
-                </div>
-
-                <!--
-                <div class="barra-contenedor">
-                  <div
-                    class="barra-avance"
-                    :style="{ width: pro.porcentajeCompletado + '%' }"
-                  ></div>
-                </div>
-                -->
-              </li>
-            </ul>
           </div>
 
           <!-- Configuración -->
@@ -185,7 +158,20 @@ export default {
       { immediate: true }
     );
   },
+  computed: {
+  visibleProgresos() {
+    return this.progresos.filter(p => p.porcentajeCompletado > 0);
+  }
+},
   methods: {
+    formatDate(dateStr: string) {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('es-AR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  },
     logout() {
       this.$auth0.logout({
         logoutParams: {

@@ -11,6 +11,7 @@ import opcionesPago from '@/components/opcionesPago.vue'
 import confirmacion from '@/components/confirmacion.vue'
 import detalleEjercicio from '@/components/detalleEjercicio.vue'
 import Correccion from '@/components/correccion.vue'
+import DetalleEvaluacion from '@/components/DetalleEvaluacion.vue'
 
 
 
@@ -75,7 +76,14 @@ const routes = [
     path: '/confirmacion',
     name: 'confirmacion',
     component: confirmacion,
-  }
+  },
+  {
+  path: '/evaluacion/:id',
+  name: 'DetalleEvaluacion',
+  component: DetalleEvaluacion,
+  props: true
+ }
+
 
 ]
 
