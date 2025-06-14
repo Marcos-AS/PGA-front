@@ -83,12 +83,11 @@ import { useAuth0 } from '@auth0/auth0-vue';
           },
 
           async onApprove(data: {orderID: string }) {
-            const token = await getAccessTokenSilently({});
             const response = await fetch(`/api/paypal/orders/${data.orderID}/capture`, {
               method: "POST",
               headers: { 
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
+                "Authorization": `Bearer ${self.token}`
               },
             });
   

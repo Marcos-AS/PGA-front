@@ -10,10 +10,7 @@ const { user, isAuthenticated, loginWithRedirect, logout, getAccessTokenSilently
 watchEffect(async () => {
   if (isAuthenticated.value && user.value) {
     try {
-      const token = await getAccessTokenSilently({
-        audience: "https://PGAD-SIP.unlu.com",
-        scope: "openid profile email"
-      });
+      const token = await getAccessTokenSilently();
       //console.log(token);
       
 
