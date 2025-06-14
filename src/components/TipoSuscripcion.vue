@@ -16,7 +16,7 @@
 
     methods: {
         async getSuscripciones() {
-            const respuesta = await axios.get('/api/tiposSuscripcion');
+            const respuesta = await axios.get('/api/tipos-suscripcion');
             console.log(respuesta.data);
             this.suscripciones = respuesta.data;
         },
