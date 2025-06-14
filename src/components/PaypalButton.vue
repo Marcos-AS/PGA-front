@@ -16,6 +16,12 @@ import { useAuth0 } from '@auth0/auth0-vue';
     }
   }
 
+  declare global {
+    interface Window {
+      paypal: any;
+    }
+  }
+
   export default {
     mounted() {
       console.log('PaypalButton montado');
@@ -82,7 +88,7 @@ import { useAuth0 } from '@auth0/auth0-vue';
             }
           },
 
-          async onApprove(data: {orderID: string }) {
+          async onApprove(data: { orderID: string }) {
             const response = await fetch(`/api/paypal/orders/${data.orderID}/capture`, {
               method: "POST",
               headers: { 
@@ -96,8 +102,7 @@ import { useAuth0 } from '@auth0/auth0-vue';
             const messageElement = document.querySelector("#result-message");
             if(messageElement) {
               messageElement.innerHTML = `Transacción ${transaction.status}: ${transaction.id}`;
-            };
-          },
+            };          },
         }).render("#paypal-button-container");
       },
     },
