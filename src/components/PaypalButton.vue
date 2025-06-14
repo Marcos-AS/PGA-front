@@ -8,7 +8,6 @@
   <script lang="ts">
 import { useAuth0 } from '@auth0/auth0-vue';
 
-  const { getAccessTokenSilently } = useAuth0();
 
   
   declare global {
@@ -50,7 +49,7 @@ import { useAuth0 } from '@auth0/auth0-vue';
       },
       
       renderPaypalButton() {
-
+        const self = this;
         window.paypal.Buttons({
           style: {
             shape: "rect",
@@ -61,7 +60,7 @@ import { useAuth0 } from '@auth0/auth0-vue';
 
           async createOrder() { //lo llama la sdk de paypal
             try {              
-              const token = await getAccessTokenSilently({});
+              const token = await self.$auth0.getAccessTokenSilently({});
               console.log(token);
 
               const response = await fetch("/api/paypal/orders", {

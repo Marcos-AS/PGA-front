@@ -10,7 +10,7 @@ import EjerciciosView from '@/components/EjerciciosView.vue'
 import opcionesPago from '@/components/opcionesPago.vue'
 import confirmacion from '@/components/confirmacion.vue'
 import detalleEjercicio from '@/components/detalleEjercicio.vue'
-import Correccion from '@/components/correccion.vue'
+import CorreccionEjercicio from '@/components/correccionEjercicio.vue'
 import DetalleEvaluacion from '@/components/DetalleEvaluacion.vue'
 
 
@@ -86,7 +86,7 @@ const routes = [
  {
   path: '/correccion/evaluacion/:id',
   name: 'correccion',
-  component: Correccion,}
+  component: CorreccionEjercicio,}
 
 
 ]
