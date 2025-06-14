@@ -6,9 +6,9 @@
 
     <div v-else-if="isAuthenticated">
       <h2>Perfil del usuario</h2>
-      <div>
+      <!-- <div>
         <button @click="logout" class="btn-logout">Cerrar sesión</button>
-      </div>
+      </div> -->
 
       <main class="perfil-container">
         <h2 class="perfil-usuario">

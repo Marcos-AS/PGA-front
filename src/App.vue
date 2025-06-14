@@ -11,6 +11,8 @@ watchEffect(async () => {
   if (isAuthenticated.value && user.value) {
     try {
       const token = await getAccessTokenSilently();
+      //console.log(token);
+      
 
       const payload = {
        auth0Id: user.value.sub,
@@ -60,10 +62,10 @@ function doLogout() {
           <RouterLink to="/suscripciones">Suscripciones</RouterLink>
           <RouterLink to="/cursos">Cursos</RouterLink>
           <RouterLink to="/perfil">Perfil</RouterLink>
+          <p v-if="isAuthenticated">Hola {{ user?.nickname }}</p>
           <button v-if="!isAuthenticated" @click="login" class="login-btn">Iniciar Sesión</button>
           <button v-else @click="doLogout" class="login-btn">Cerrar sesión</button>
-          <p v-if="isAuthenticated">Hola usuario {{ user?.sub }}</p>
-          <div class="menu-icon">☰</div>
+          <!-- <div class="menu-icon">☰</div> -->
         </nav>
       </header>
 
