@@ -82,7 +82,11 @@ const routes = [
   name: 'DetalleEvaluacion',
   component: DetalleEvaluacion,
   props: true
- }
+ },
+ {
+  path: '/correccion/evaluacion/:id',
+  name: 'correccion',
+  component: Correccion,}
 
 
 ]

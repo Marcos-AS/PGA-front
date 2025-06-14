@@ -106,12 +106,13 @@ async function enviarRespuesta() {
   try {
     const token = await getAccessTokenSilently()
     const res = await axios.post(
-      '/api/corregirEvaluacion',
+      '/api/corregir/evaluaciones',
       { idEvaluacion: evaluacionId, codigo: code.value },
       { headers: { Authorization: `Bearer ${token}` } }
     )
     // guardamos el resultado y vamos a la pantalla de corrección
     sessionStorage.setItem('correccionResultado', JSON.stringify(res.data))
+    console.log (evaluacionId)
     router.push(`/correccion/evaluacion/${evaluacionId}`)
   } catch (err) {
     console.error('Error al enviar la evaluación:', err)

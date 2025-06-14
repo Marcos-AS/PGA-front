@@ -4,30 +4,39 @@ import { watchEffect } from "vue";
 import axios from 'axios';
 import { RouterLink, RouterView } from "vue-router";
 
-const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
+const { user, isAuthenticated, loginWithRedirect, logout, getAccessTokenSilently } = useAuth0();
+
 
 watchEffect(async () => {
   if (isAuthenticated.value && user.value) {
     try {
-      const response = await axios.get("/api/usuarios/sincronizar", {
-        params: {
-          auth0Id: user.value.sub,
-        }
+      const token = await getAccessTokenSilently({
+        audience: "https://PGAD-SIP.unlu.com",
+        scope: "openid profile email"
       });
-      console.log("Usuario registrado en la base de datos:", response.data);
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 409) {
-          console.log("⚠️ El usuario ya estaba registrado");
-        } else {
-          console.error("❌ Error al registrar usuario:", error.response?.data || error.message);
-        }
-      } else {
-        console.error("❌ Error desconocido al registrar usuario:", error);
+
+      const payload = {
+       auth0Id: user.value.sub,
       }
+
+      const response = await axios.post(
+        "/api/usuarios/sincronizar",
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          }
+        }
+      );
+      console.log("Usuario sincronizado:", response.data);
+
+    } catch (error) {
+      console.error("❌ Error al sincronizar usuario:", error);
     }
   }
 });
+
 
 
 
