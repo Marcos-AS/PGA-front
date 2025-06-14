@@ -2,11 +2,11 @@ import { createRouter, createWebHistory } from 'vue-router'
 import PerfilComponent from '@/components/PerfilComponent.vue'
 import Suscripcion from '@/components/Suscripcion.vue'
 import HomePage from '@/components/HomePage.vue'
-import Cursos from '../components/Cursos.vue'
-import FormCreacion from '../components/FormCreacion.vue'
-import detalleCurso from '../components/detalleCurso.vue'
-import detalleModulo from '../components/detalleModulo.vue'
-import Ejerciciosview from '@/components/Ejerciciosview.vue'
+import Cursos from '@/components/Cursos.vue'
+import FormCreacion from '@/components/FormCreacion.vue'
+import detalleCurso from '@/components/detalleCurso.vue'
+import detalleModulo from '@/components/detalleModulo.vue'
+import EjerciciosView from '@/components/EjerciciosView.vue'
 import opcionesPago from '@/components/opcionesPago.vue'
 import confirmacion from '@/components/confirmacion.vue'
 import detalleEjercicio from '@/components/detalleEjercicio.vue'
@@ -60,7 +60,7 @@ const routes = [
   {
     path: '/modulo/:id/ejercicios',
     name: 'EjerciciosModulo',
-    component: Ejerciciosview,
+    component: EjerciciosView,
   },
 
   {

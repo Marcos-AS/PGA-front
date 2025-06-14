@@ -128,15 +128,15 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      user: this.$auth0.user,
+      user: this.$auth0.user.value as AuthUser,
       isAuthenticated: this.$auth0.isAuthenticated,
       isLoading: this.$auth0.isLoading,
       editingField: '',
       editableValues: {
-        nickname: this.$auth0.user?.nickname || '',
-        email: this.$auth0.user?.email || '',
+        nickname: this.$auth0.user.value?.nickname || '',
+        email: this.$auth0.user.value?.email || '',
         password: '',
-      },
+      } as { [key: string]: any },
       progresos: [] as Array<{
         id: number;
         curso: { id: number; nombre: string };
@@ -184,7 +184,7 @@ export default {
     },
     saveField(field: string) {
       // Lo edita local, agregar lógica real con API
-      ;(this.user as unknown)[field] = this.editableValues[field]
+      (this.user as any)[field] = this.editableValues[field]
       this.editingField = ''
     },
 
@@ -193,11 +193,11 @@ export default {
     async fetchProgresos() {
       try {
         // Suponemos que 'sub' coincide con idUsuario en backend
-        const userIdBackend = (this.user as unknown).sub
+        const userIdBackend = (this.user as any).sub
         const response = await axios.get('/api/progresos', {
           params: { idUsuario: userIdBackend },
         })
-        this.progresos = response.data.map((p: unknown) => ({
+        this.progresos = response.data.map((p: any) => ({
           id: p.id,
           curso: {
             id: p.curso.id,
@@ -226,7 +226,7 @@ export default {
         const dto = {
           id: progresoId,
           curso: { id: prog.curso.id },
-          Usuario: { id: (this.user as unknown).sub },
+          Usuario: { id: (this.user as any).sub },
           porcentajeCompletado: this.editableProgresoValue,
           // omitimos fechaActualizacion para que el backend la ponga automáticamente
         }

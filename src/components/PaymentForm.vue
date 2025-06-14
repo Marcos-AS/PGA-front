@@ -5,6 +5,13 @@
   </template>
   
   <script lang="ts">
+
+  declare global {
+    interface Window {
+      MercadoPago: any;
+    }
+  }
+
   export default {
     mounted() {
       this.$nextTick(() => {
@@ -40,7 +47,7 @@
             paymentMethods: { maxInstallments: 1 },
           },
           callbacks: {
-            onSubmit: async (cardFormData) => {
+            onSubmit: async (cardFormData: any) => {
                 const token = await this.$auth0.getAccessTokenSilently();
                 console.log(token);
                 
@@ -68,7 +75,7 @@
                 })
                 .catch((error) => console.error("error en el pago: ", error));
             },
-            onError: (error) => console.error("Brick error:", error),
+            onError: (error: any) => console.error("Brick error:", error),
             onReady: () => {
               console.log("Brick is ready");
             },

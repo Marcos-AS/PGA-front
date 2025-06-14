@@ -26,10 +26,7 @@ export default {
             this.cargando = true;
             this.mensajeConfirmacion = "Creando curso...";
             try {
-                const token = await this.$auth0.getAccessTokenSilently({
-                    audience: 'https://PGAD-SIP.unlu.com',
-                    scope: 'create:course'
-                })
+                const token = await this.$auth0.getAccessTokenSilently({})
                 console.log("Curso a enviar:", JSON.stringify(this.curso, null, 2));
                 const response = await axios.post('/api/cursos', this.curso,
                     {

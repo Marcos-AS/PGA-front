@@ -8,6 +8,12 @@
   <script lang="ts">
   import { useAuth0 } from '@auth0/auth0-vue';
 
+  declare global {
+    interface Window {
+      paypal: any;
+    }
+  }
+
   export default {
     mounted() {
       console.log('PaypalButton montado');
@@ -53,10 +59,7 @@
 
           async createOrder() { //lo llama la sdk de paypal
             try {              
-              const token = await self.$auth0.getAccessTokenSilently({
-                audience: 'https://PGAD-SIP.unlu.com',
-                scope: 'create:order capture:order'
-              });
+              const token = await self.$auth0.getAccessTokenSilently({});
               console.log(token);
               self.token = token;
 
@@ -79,7 +82,7 @@
             }
           },
 
-          async onApprove(data, actions) {
+          async onApprove(data: { orderID: string }) {
             const response = await fetch(`/api/paypal/orders/${data.orderID}/capture`, {
               method: "POST",
               headers: { 
@@ -90,8 +93,10 @@
   
             const orderData = await response.json();
             const transaction = orderData?.purchase_units?.[0]?.payments?.captures?.[0];
-            document.querySelector("#result-message").innerHTML = `Transacción ${transaction.status}: ${transaction.id}`;
-          },
+            const messageElement = document.querySelector("#result-message");
+            if(messageElement) {
+              messageElement.innerHTML = `Transacción ${transaction.status}: ${transaction.id}`;
+            };          },
         }).render("#paypal-button-container");
       },
     },
