@@ -10,7 +10,11 @@ import EjerciciosView from '@/components/EjerciciosView.vue'
 import opcionesPago from '@/components/opcionesPago.vue'
 import confirmacion from '@/components/confirmacion.vue'
 import detalleEjercicio from '@/components/detalleEjercicio.vue'
-import CorreccionEjercicio from '@/components/correccionEjercicio.vue'
+import Correccion from '@/components/correccion.vue'
+import DetalleEvaluacion from '@/components/DetalleEvaluacion.vue'
+
+
+
 
 const routes = [
   {
@@ -72,7 +76,18 @@ const routes = [
     path: '/confirmacion',
     name: 'confirmacion',
     component: confirmacion,
-  }
+  },
+  {
+  path: '/evaluacion/:id',
+  name: 'DetalleEvaluacion',
+  component: DetalleEvaluacion,
+  props: true
+ },
+ {
+  path: '/correccion/evaluacion/:id',
+  name: 'correccion',
+  component: Correccion,}
+
 
 ]
 

@@ -14,7 +14,7 @@ export default {
             },
             listaCategorias: [
                 { id: 1, nombre: "Python", tipo: "LENGUAJE" },
-                { id: 3, nombre: "Java", tipo: "LENGUAJE" }
+                { id: 2, nombre: "Java", tipo: "LENGUAJE" }
             ],
             token: "",
             mensajeConfirmacion: "",
@@ -38,14 +38,14 @@ export default {
                     }
                 );
                 console.log("Curso creado", response.data);
-                
+
                 const cursoId = response.data.id;
                 const titulo = response.data.titulo;
 
                 this.mensajeConfirmacion = "¡Curso creado con éxito!";
 
                 setTimeout(() => {
-                    this.$router.push({ name: 'detalleCurso', params: { 
+                    this.$router.push({ name: 'detalleCurso', params: {
                         id: cursoId,
                         titulo: titulo} });
                 }, 2000);
@@ -95,7 +95,7 @@ export default {
             <option value="avanzado">Avanzado</option>
         </select>
         <input type="submit" value="Crear curso" />
-        
+
         <p v-if="mensajeConfirmacion" class="mensaje-confirmacion">{{ mensajeConfirmacion }}</p>
     </form>
 </template>

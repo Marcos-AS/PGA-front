@@ -28,6 +28,35 @@
       </ul>
     </section>
 
+      <section class="evaluacion-box">
+      <h3 class="curso-subt">Evaluación Final</h3>
+
+      <div v-if="evaluacion">
+        <div class="evaluacion-card">
+          <h4>{{ evaluacion.titulo }}</h4>
+          <p>{{ evaluacion.descripcion }}</p>
+          <p><strong>Dificultad:</strong> {{ evaluacion.dificultad }}</p>
+          <p>
+            <strong>Creado el:</strong>
+            {{ formatDate(evaluacion.fechaCreacion) }}
+          </p>
+          <RouterLink
+            :to="`/evaluacion/${evaluacion.id}`"
+            class="btn-evaluacion"
+          >
+            Iniciar Evaluación
+          </RouterLink>
+        </div>
+      </div>
+
+      <div v-else>
+        <p>No hay Evaluación Final generada aún.</p>
+        <button @click="generarEvaluacion" class="btn-generate">
+          Generar Evaluación Final
+        </button>
+      </div>
+    </section>
+
   </main>
 
   <div v-else>Cargando curso...</div>
@@ -40,6 +69,7 @@ import axios from 'axios'
 import { useAuth0 } from '@auth0/auth0-vue'
 const { getAccessTokenSilently, user: authUser, isAuthenticated } = useAuth0()
 const router = useRouter()
+const route = useRoute()
 
 
 interface Curso {
@@ -56,6 +86,15 @@ interface Curso {
   }[]
 }
 
+interface Evaluacion {
+  id: number
+  idCurso: number
+  titulo: string
+  descripcion: string
+  dificultad: string
+  fechaCreacion: string
+  tests: unknown[]
+}
 
 interface Progreso{
   id: number | null,
@@ -72,9 +111,8 @@ interface Progreso{
 
 // 2. Crear ref con tipo adecuado
 const curso = ref<Curso | null>(null)
-
-const route = useRoute()
 const idCurso = parseInt(route.params.id as string, 10)
+const evaluacion = ref<Evaluacion | null>(null)
 console.log('ID del curso:', idCurso);
 
 const titulo = decodeURIComponent(route.params.titulo as string)
@@ -85,12 +123,48 @@ onMounted(async () => {
     const data = await response.json()
     console.log('Respuesta de la API:', data)
     curso.value = data
+    await fetchEvaluacion()
 
   } catch (error) {
     console.error('Error cargando curso:', error)
   }
 
 })
+
+async function fetchEvaluacion() {
+  try {
+    const respEval = await axios.get<Evaluacion[]>(`/api/evaluaciones`, { params: { cursoId: idCurso } })
+    if (respEval.data.length > 0) {
+      evaluacion.value = respEval.data[0]
+    }
+  } catch (err) {
+    console.error('Error obteniendo evaluación:', err)
+  }
+}
+
+/**
+ * Genera la evaluación final a través del endpoint POST
+ */
+async function generarEvaluacion() {
+  if (!isAuthenticated.value) {
+    console.error('Usuario no autenticado')
+    return
+  }
+  try {
+    const token = await getAccessTokenSilently()
+    const payload = { idCurso } // ajusta si GenerateEvaluacionRequestDTO tiene más campos
+    const resp = await axios.post<Evaluacion>(`/api/evaluaciones`, payload, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      }
+    })
+    evaluacion.value = resp.data
+  } catch (err) {
+    console.error('Error generando evaluación:', err)
+  }
+}
+
 
 async function iniciarProgreso() {
 
@@ -129,9 +203,10 @@ async function iniciarProgreso() {
 }
 
 
-// Separar temario por líneas
-const temarioItems = computed(() => {
-  return curso.value?.temario?.split('\n').map((item: string) => item.trim()) || []
-})
+
+function formatDate(dateStr: string) {
+  const d = new Date(dateStr)
+  return d.toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' })
+}
 </script>
 

@@ -4,28 +4,40 @@ import { watchEffect } from "vue";
 import axios from 'axios';
 import { RouterLink, RouterView } from "vue-router";
 
-const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
+const { user, isAuthenticated, loginWithRedirect, logout, getAccessTokenSilently } = useAuth0();
 
-  watchEffect(async () => {
+
+watchEffect(async () => {
   if (isAuthenticated.value && user.value) {
     try {
-      //si el usuario inicia sesión, se registra en nuestra bd
-      await axios.get("/api/usuarios/sincronizar", {
-        params: {
-          auth0Id: user.value.sub,
-        }
-      } 
-    );
-      console.log("Usuario registrado en la base de datos");
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 409) {
-        console.log("El usuario ya estaba registrado");
-      } else {
-        console.error("Error al registrar usuario:", error);
+      const token = await getAccessTokenSilently({
+        audience: "https://PGAD-SIP.unlu.com",
+        scope: "openid profile email"
+      });
+
+      const payload = {
+       auth0Id: user.value.sub,
       }
+
+      const response = await axios.post(
+        "/api/usuarios/sincronizar",
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          }
+        }
+      );
+      console.log("Usuario sincronizado:", response.data);
+
+    } catch (error) {
+      console.error("❌ Error al sincronizar usuario:", error);
     }
   }
 });
+
+
 
 
     function login() {
@@ -37,7 +49,7 @@ const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
 function doLogout() {
   logout({ logoutParams: { returnTo: window.location.origin } });
 }
-  
+
 </script>
 
 <template>

@@ -169,7 +169,6 @@
         // 4.3.b) Ya que no hay totalEjerciciosDelCurso en la BD, lo hardcodeamos en 9:
         const cursoId = Number(sessionStorage.getItem('currentCursoId'))
 
-        const total = 9
 
         // 4.3.c) BUSCAR si ya existe un Progreso para (userId, cursoId)
         let progresoExistente: any = null
@@ -212,10 +211,17 @@
         // 4.3.e) Incremento el contador local
         ejerciciosCompletadosLocal.value++
 
+        const total = 9
+        const porcentajeExistente = Number(progresoActual.porcentajeCompletado) || 0;
+
+
         // 4.3.f) Calculo el nuevo porcentaje sobre 9
-        const porcentaje = parseFloat(
-          ((ejerciciosCompletadosLocal.value / total) * 100).toFixed(2)
-        )
+       const incremento = parseFloat((100 / total).toFixed(2));
+
+// 3) nuevo porcentaje acumulado
+const porcentajeNuevo = parseFloat(
+  (porcentajeExistente + incremento).toFixed(2)
+);
 
         // 4.3.g) Hago PUT para actualizar el porcentaje en BD
         if (progresoActual && progresoActual.id) {
@@ -224,7 +230,8 @@
               id: progresoActual.id,
               curso: { id: cursoId },
               usuario: { id: userId },
-              porcentajeCompletado: porcentaje,
+              porcentajeCompletado: porcentajeNuevo,
+              fechaActualizacion: new Date().toISOString(),
             }
             const respPut = await axios.put(
               `/api/progresos/${progresoActual.id}`,
