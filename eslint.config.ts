@@ -7,18 +7,36 @@ import skipFormatting from '@vue/eslint-config-prettier/skip-formatting'
 // configureVueProject({ scriptLangs: ['ts', 'tsx'] })
 // More info at https://github.com/vuejs/eslint-config-typescript/#advanced-setup
 
-export default defineConfigWithVueTs(
-  {
-    name: 'app/files-to-lint',
-    files: ['**/*.{ts,mts,tsx,vue}'],
-  },
+import { defineConfig } from 'eslint-define-config'
 
-  {
-    name: 'app/files-to-ignore',
-    ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**'],
+export default defineConfig({
+  root: true,
+  env: {
+    browser: true,
+    es2021: true,
+    node: true,
   },
+  parser: 'vue-eslint-parser',
+  parserOptions: {
+    parser: '@typescript-eslint/parser', // parser para TS dentro de Vue
+    ecmaVersion: 2022,
+    sourceType: 'module',
+    ecmaFeatures: {
+      jsx: true,
+    },
+  },
+  extends: [
+    'plugin:vue/vue3-essential',                  // reglas esenciales para Vue 3
+    'plugin:@typescript-eslint/recommended',      // reglas recomendadas para TS
+    '@vue/eslint-config-typescript/recommended', // reglas extra para Vue+TS
+    '@vue/eslint-config-prettier',                 // para que no haya conflictos con prettier
+  ],
+  plugins: ['vue', '@typescript-eslint'],
+  rules: {
+    // Aquí puedes poner tus reglas personalizadas o sobrescribir las existentes
+    'vue/script-setup-uses-vars': 'error',
+    '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+  },
+  ignorePatterns: ['dist/', 'node_modules/', 'coverage/'],
+})
 
-  pluginVue.configs['flat/essential'],
-  vueTsConfigs.recommended,
-  skipFormatting,
-)
