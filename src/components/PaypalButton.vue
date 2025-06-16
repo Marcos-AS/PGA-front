@@ -76,7 +76,7 @@ import { useAuth0 } from '@auth0/auth0-vue';
                   "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                  cart: [{ id: "123", quantity: 1 }],
+                  suscripcionId: 1,
                 }),
               });
 

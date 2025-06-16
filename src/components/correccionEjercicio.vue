@@ -37,16 +37,23 @@ onMounted(() => {
   const data = sessionStorage.getItem('correccionResultado')
   if (data) {
     try {
+      if (data.startsWith('{')) {
+        const parsed = JSON.parse(data) as CorreccionResponse
+        resultado.value = parsed
+        if (parsed.output) {
+          correccion.value = parsed.output.replace(/\\n/g, '\n')
+        }
+      } else {
+        // Es un string plano, lo tratamos como error
+        resultado.value = {
+          success: false,
+          output: "",
+          error: JSON.parse(data) // quita las comillas del string serializado
+        }
       const parsed = JSON.parse(data) as CorreccionResponse
 
-      // Reemplazamos \n literales si vienen escapados
-      if (parsed.output) {
-        correccion.value = parsed.output.replace(/\\n/g, '\n')
-      }
-
-      resultado.value = parsed
-      console.log("Resultado cargado: ", resultado.value)
-    } catch (error) {
+    }
+   } catch (error) {
       console.error("Error al parsear el resultado de corrección:", error)
     }
   } else {
