@@ -67,7 +67,8 @@ import { useAuth0 } from '@auth0/auth0-vue';
           async createOrder() { //lo llama la sdk de paypal
             try {              
               const token = await self.$auth0.getAccessTokenSilently({});
-              console.log(token);
+              self.token = token;
+              //console.log(token);
 
               const response = await fetch("/api/paypal/orders", {
                 method: "POST",
@@ -81,6 +82,8 @@ import { useAuth0 } from '@auth0/auth0-vue';
               });
 
               const orderData = await response.json();
+              console.log("order data: ", orderData);
+              
               return orderData.id;
 
             } catch (error) {
@@ -89,6 +92,9 @@ import { useAuth0 } from '@auth0/auth0-vue';
           },
 
           async onApprove(data: { orderID: string }) {
+            console.log("onApprove data: ", data);
+            console.log("token: ", self.token);
+            
             const response = await fetch(`/api/paypal/orders/${data.orderID}/capture`, {
               method: "POST",
               headers: { 
