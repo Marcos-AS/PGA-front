@@ -211,7 +211,34 @@
         // 4.3.e) Incremento el contador local
         ejerciciosCompletadosLocal.value++
 
-        const total = 9
+        // 1) Obtener duración del curso desde localStorage (o ajustalo según tu lógica)
+        const duracion = sessionStorage.getItem('cursoDuracion') || '1 semana' // fallback por si no hay valor
+
+        // 2) Calcular total de ejercicios según duración
+        let total = 9 // default
+
+        switch (duracion) {
+          case '1 semana':
+            total = 2
+            break
+          case '2 semanas':
+            total = 4
+            break
+          case '4 semanas':
+          case '1 mes':
+            total = 6
+            break
+          case '3 meses':
+            total = 12
+            break
+          case '6 meses':
+            total = 24
+            break
+          default:
+            console.warn(`Duración inesperada: ${duracion}`)
+            break
+        }
+
         const porcentajeExistente = Number(progresoActual.porcentajeCompletado) || 0;
 
 
