@@ -49,7 +49,8 @@ import { useAuth0 } from '@auth0/auth0-vue';
         const clientId = import.meta.env.VITE_PAYPAL_CLIENT_ID;
         // const language = navigator.language || 'en-US';
         // const baseLang = language.startsWith('es') ? 'es_XC' : language.replace('-', '_');
-        script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD`;
+        //script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD`;
+        script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD&components=buttons&disable-funding=card`;
         script.onload = this.renderPaypalButton;
         document.body.appendChild(script);
       },
@@ -64,7 +65,7 @@ import { useAuth0 } from '@auth0/auth0-vue';
             label: "paypal",
           },
           funding: {
-            disallowed: [window.paypal.FUNDING.CARD]
+            allowed: [window.paypal.FUNDING.PAYPAL]
           },
 
           async createOrder() { //lo llama la sdk de paypal
