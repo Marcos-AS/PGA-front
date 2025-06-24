@@ -99,7 +99,7 @@
           <div class="perfil-card">
             <h3>Configuración</h3>
             <ul>
-              <li>Suscripción</li>
+              <li>Suscripción <strong>{{ suscripcion?.tipo || 'Free' }}</strong> </li>
               <li>Notificaciones</li>
             </ul>
           </div>
@@ -145,6 +145,7 @@ export default {
       }>,
       editingProgresoId: null as number | null,
       editableProgresoValue: 0 as number,
+      suscripcion: null as null | { tipo: string; fechaInicio: string; fechaFin: string },
     };
   },
   mounted() {
@@ -152,7 +153,8 @@ export default {
       () => this.isAuthenticated && this.user?.sub,
       (val) => {
         if (val) {
-          this.fetchProgresos();
+          this.fetchProgresos();0
+          this.fetchSuscripcion();
         }
       },
       { immediate: true }
@@ -162,6 +164,7 @@ export default {
   visibleProgresos() {
     return this.progresos.filter(p => p.porcentajeCompletado > 0);
   }
+
 },
   methods: {
     formatDate(dateStr: string) {
@@ -250,6 +253,24 @@ export default {
       this.editingProgresoId = null
       this.editableProgresoValue = 0
     },
+
+    async fetchSuscripcion() {
+    try {
+      const userId = this.user.sub
+      const response = await axios.get(`/api/suscripciones`, {
+        params: { idUsuario: userId }
+      })
+
+      // Asumimos que el backend devuelve un array y tomamos la suscripción activa más reciente
+      if (response.data.length > 0) {
+          // Opcional: podés filtrar por la más reciente, vigente, etc.
+          this.suscripcion = response.data[0] // o usar un mejor criterio
+        }
+      } catch (error) {
+        console.error('Error al obtener la suscripción:', error)
+      }
+    }
+
   },
 }
 </script>

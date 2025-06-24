@@ -6,7 +6,7 @@ import listaCursos from '@/components/listaCursos.vue'
 import FormCreacion from '@/components/FormCreacion.vue'
 import detalleCurso from '@/components/detalleCurso.vue'
 import detalleModulo from '@/components/detalleModulo.vue'
-import EjerciciosView from '@/components/EjerciciosView.vue'
+import EjerciciosView from '@/components/Ejerciciosview.vue'
 import opcionesPago from '@/components/opcionesPago.vue'
 import confirmacion from '@/components/confirmacion.vue'
 import detalleEjercicio from '@/components/detalleEjercicio.vue'
@@ -86,7 +86,14 @@ const routes = [
  {
   path: '/correccion/evaluacion/:id',
   name: 'correccion',
-  component: CorreccionEjercicio,}
+  component: CorreccionEjercicio,
+},
+{
+  path: '/confirmacion',
+  name: 'Confirmacion',
+  component: confirmacion,
+}
+
 
 
 ]
