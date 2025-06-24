@@ -63,6 +63,9 @@ import { useAuth0 } from '@auth0/auth0-vue';
             color: "gold",
             label: "paypal",
           },
+          funding: {
+            disallowed: [window.paypal.FUNDING.CARD]
+          },
 
           async createOrder() { //lo llama la sdk de paypal
             try {

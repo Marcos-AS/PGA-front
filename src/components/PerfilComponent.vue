@@ -99,7 +99,10 @@
           <div class="perfil-card">
             <h3>Configuración</h3>
             <ul>
-              <li>Suscripción <strong>{{ suscripcion?.tipo || 'Free' }}</strong> </li>
+              <li>Suscripción <strong>{{ suscripcion?.suscripcion.tipoSuscripcion || 'Free' }}</strong> </li>
+              <li>
+                {{ suscripcion ? 'Inicio: ' + formatDate(suscripcion.fechaInicio) + ' - Finaliza: ' + formatDate(suscripcion.fechaFin) : '' }}
+              </li>
               <li>Notificaciones</li>
             </ul>
           </div>
@@ -124,6 +127,7 @@
 
 <script lang="ts">
 import axios from 'axios';
+import { formatDate } from '@/utils/formatDate';
 
 export default {
   data() {
@@ -145,7 +149,8 @@ export default {
       }>,
       editingProgresoId: null as number | null,
       editableProgresoValue: 0 as number,
-      suscripcion: null as null | { tipo: string; fechaInicio: string; fechaFin: string },
+      suscripcion: null as null | { suscripcion: {id: number; tipoSuscripcion: string; precio: number;};
+       fechaInicio: string; fechaFin: string },
     };
   },
   mounted() {
@@ -167,14 +172,7 @@ export default {
 
 },
   methods: {
-    formatDate(dateStr: string) {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString('es-AR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  },
+    formatDate,
     logout() {
       this.$auth0.logout({
         logoutParams: {
@@ -260,11 +258,14 @@ export default {
       const response = await axios.get(`/api/suscripciones`, {
         params: { idUsuario: userId }
       })
+      console.log('Suscripciones obtenidas:', response.data);
+      console.log('Suscripciones obtenidas:', response.data[response.data.length-1]);
+      
 
       // Asumimos que el backend devuelve un array y tomamos la suscripción activa más reciente
       if (response.data.length > 0) {
           // Opcional: podés filtrar por la más reciente, vigente, etc.
-          this.suscripcion = response.data[0] // o usar un mejor criterio
+          this.suscripcion = response.data[response.data.length-1] // o usar un mejor criterio
         }
       } catch (error) {
         console.error('Error al obtener la suscripción:', error)

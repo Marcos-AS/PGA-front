@@ -1,5 +1,5 @@
 # servidor Nginx
-FROM nginx:stable-alpine as production-stage
+FROM nginx:stable-alpine AS production-stage
 
 COPY ./dist /usr/share/nginx/html
 

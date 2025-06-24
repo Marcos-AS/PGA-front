@@ -16,6 +16,7 @@
     "@auth0/auth0-spa-js": "^2.2.0",
     "@auth0/auth0-vue": "^2.4.0",
     "axios": "^1.9.0",
+    "dayjs": "^1.11.13",
     "jspdf": "^3.0.1",
     "monaco-editor": "^0.52.2",
     "monaco-editor-vue3": "^0.1.10",
