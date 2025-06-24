@@ -4,7 +4,7 @@ FROM nginx:stable-alpine as production-stage
 COPY ./dist /usr/share/nginx/html
 
 # Copiar configuración personalizada de Nginx (opcional)
-#COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Exponer el puerto por el que Nginx sirve la app
 EXPOSE 80
