@@ -12,6 +12,7 @@ import confirmacion from '@/components/confirmacion.vue'
 import detalleEjercicio from '@/components/detalleEjercicio.vue'
 import CorreccionEjercicio from '@/components/correccionEjercicio.vue'
 import DetalleEvaluacion from '@/components/DetalleEvaluacion.vue'
+import CorreccionEvaluacion from '@/components/correccionEvaluacion.vue'
 
 
 
@@ -86,7 +87,7 @@ const routes = [
  {
   path: '/correccion/evaluacion/:id',
   name: 'correccion',
-  component: CorreccionEjercicio,
+  component: CorreccionEvaluacion,
 },
 {
   path: '/confirmacion',

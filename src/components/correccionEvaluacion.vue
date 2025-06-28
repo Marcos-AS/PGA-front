@@ -1,6 +1,6 @@
 <template>
   <div class="contenedor-correccion">
-    <h2>Corrección de la evaluación final</h2>
+    <h2>Corrección del ejercicio</h2>
 
     <div v-if="resultado">
       <p class="estado" :class="{ correcto: resultado.success, incorrecto: !resultado.success }">
@@ -15,14 +15,6 @@
       <p v-if="resultado.error">
         <strong>Error:</strong> {{ resultado.error }}
       </p>
-
-      <!-- Mensaje de aprobación y botón para certificado -->
-      <div v-if="resultado.success" class="certificado-box">
-        <p class="texto-correccion">¡Felicitaciones! Has aprobado el curso.</p>
-        <button class="btn-certificado" @click="descargarCertificado">
-          Descargar Certificado en PDF
-        </button>
-      </div>
     </div>
 
     <RouterLink to="/" class="volver">Volver al inicio</RouterLink>
@@ -31,8 +23,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import jsPDF from 'jspdf'
-import { useAuth0 } from '@auth0/auth0-vue'
+import axios from 'axios'
 
 interface CorreccionResponse {
   success: boolean
@@ -43,43 +34,51 @@ interface CorreccionResponse {
 const resultado = ref<CorreccionResponse | null>(null)
 const correccion = ref<string>('')
 
-const { user } = useAuth0()
-
-onMounted(() => {
+onMounted(async () => {
   const data = sessionStorage.getItem('correccionResultado')
   if (data) {
     try {
-      const parsed = JSON.parse(data) as CorreccionResponse
+      if (data.startsWith('{')) {
+        const parsed = JSON.parse(data) as CorreccionResponse
+        resultado.value = parsed
+        if (parsed.output) {
+          correccion.value = parsed.output.replace(/\\n/g, '\n')
+        }
 
-      if (parsed.output) {
-        correccion.value = parsed.output.replace(/\\n/g, '\n')
+        // 👉 Si la corrección fue correcta, descargamos el PDF
+        if (parsed.success) {
+          try {
+            const pdfResponse = await axios.get('/api/certificaciones/1/pdf', {
+              responseType: 'blob' // para manejarlo como archivo
+            })
+
+            const url = window.URL.createObjectURL(new Blob([pdfResponse.data]))
+            const link = document.createElement('a')
+            link.href = url
+            link.setAttribute('download', 'certificacion.pdf')
+            document.body.appendChild(link)
+            link.click()
+            link.remove()
+            window.URL.revokeObjectURL(url)
+          } catch (error) {
+            console.error('Error al descargar el PDF de certificación:', error)
+          }
+        }
+      } else {
+        // es un string plano
+        resultado.value = {
+          success: false,
+          output: "",
+          error: JSON.parse(data)
+        }
       }
-
-      resultado.value = parsed
     } catch (error) {
-      console.error('Error al parsear el resultado de corrección:', error)
+      console.error("Error al parsear el resultado de corrección:", error)
     }
+  } else {
+    console.warn("No se encontró correccionResultado en sessionStorage")
   }
 })
-
-function descargarCertificado() {
-  const nombreCurso = sessionStorage.getItem('currentCursoTitulo') || 'Curso Desconocido'
-  const nombreAlumno = user.value?.name || 'Estudiante'
-  const fecha = new Date().toLocaleDateString('es-AR')
-
-  const doc = new jsPDF()
-
-  doc.setFontSize(18)
-  doc.text('Certificado de Finalización', 105, 30, { align: 'center' })
-
-  doc.setFontSize(12)
-  doc.text(`Otorgado a: ${nombreAlumno}`, 105, 50, { align: 'center' })
-  doc.text(`Por haber completado satisfactoriamente el curso`, 105, 60, { align: 'center' })
-  doc.text(`"${nombreCurso}"`, 105, 70, { align: 'center' })
-  doc.text(`Fecha de emisión: ${fecha}`, 105, 90, { align: 'center' })
-
-  doc.save(`certificado-${nombreCurso.replace(/\s/g, '_')}.pdf`)
-}
 </script>
 
 <style scoped>
@@ -88,60 +87,25 @@ function descargarCertificado() {
   max-width: 600px;
   margin: auto;
   text-align: center;
-  background-color: #fff;
-  border-radius: 16px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
-
 .texto-correccion {
   font-size: 1.2rem;
-  margin: 1.5rem 0;
-  color: #1AA179;
-  font-weight: 600;
+  margin: 1rem 0;
 }
-
 .estado {
   font-size: 1.1rem;
   font-weight: bold;
-  margin-bottom: 1rem;
 }
 .correcto {
-  color: #1AA179;
+  color: green;
 }
 .incorrecto {
-  color: #b91c1c;
+  color: red;
 }
-
 .volver {
   display: inline-block;
   margin-top: 2rem;
-  color: #1AA179;
-  font-weight: 600;
-  text-decoration: none;
-  border: 1px solid #1AA179;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-}
-.volver:hover {
-  background-color: #e6f4ea;
-}
-
-.certificado-box {
-  margin-top: 2rem;
-}
-
-.btn-certificado {
-  background-color: #21A899;
-  color: white;
-  padding: 0.6rem 1.2rem;
-  font-weight: bold;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-.btn-certificado:hover {
-  background-color: #168a7f;
+  color: #007bff;
+  text-decoration: underline;
 }
 </style>

@@ -47,12 +47,16 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRoute, useRouter } from 'vue-router'
-import { useAuth0 } from '@auth0/auth0-vue'
+import { useAuth0, User } from '@auth0/auth0-vue'
 import MonacoEditor from 'monaco-editor-vue3'
 
 const route = useRoute()
 const router = useRouter()
-const { getAccessTokenSilently } = useAuth0()
+const { getAccessTokenSilently, user: authUser, isAuthenticated } = useAuth0()
+const { user } = useAuth0()
+const Usuario = user.value?.sub
+
+
 
 interface Test {
   entrada: string
@@ -107,8 +111,9 @@ async function enviarRespuesta() {
     const token = await getAccessTokenSilently()
     const res = await axios.post(
       '/api/corregir/evaluaciones',
-      { idEvaluacion: evaluacionId, codigo: code.value },
-      { headers: { Authorization: `Bearer ${token}` } }
+      { idEvaluacion: evaluacionId, codigo: code.value, idUsuario: Usuario },
+
+      { headers: { Authorization: `Bearer ${token}` } },
     )
     // guardamos el resultado y vamos a la pantalla de corrección
     sessionStorage.setItem('correccionResultado', JSON.stringify(res.data))
