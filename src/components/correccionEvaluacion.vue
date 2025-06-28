@@ -24,6 +24,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
+import { useAuth0 } from '@auth0/auth0-vue'
+const { user: authUser, getAccessTokenSilently } = useAuth0()
 
 interface CorreccionResponse {
   success: boolean
@@ -48,8 +50,19 @@ onMounted(async () => {
         // Si la corrección fue correcta, descargamos el PDF
         if (parsed.success) {
           try {
-            const pdfResponse = await axios.get('/api/certificaciones/1/pdf', {
-              responseType: 'blob' // para manejarlo como archivo
+            const userId = authUser.value?.sub
+            const certRes = await axios.get('/api/certificaciones', {
+              params: { idUsuario: userId }
+            })
+
+                      // Asegurate de que haya al menos una certificación
+          const certificaciones = certRes.data
+          if (certificaciones.length > 0) {
+            const certId = certificaciones[0].id  // o la que necesites
+
+            // Descargar el PDF de esa certificación
+            const pdfResponse = await axios.get(`/api/certificaciones/${certId}/pdf`, {
+              responseType: 'blob'
             })
 
             const url = window.URL.createObjectURL(new Blob([pdfResponse.data]))
@@ -60,6 +73,9 @@ onMounted(async () => {
             link.click()
             link.remove()
             window.URL.revokeObjectURL(url)
+          } else {
+            console.warn('El usuario no tiene certificaciones')
+          }
           } catch (error) {
             console.error('Error al descargar el PDF de certificación:', error)
           }
