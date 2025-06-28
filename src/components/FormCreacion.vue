@@ -10,14 +10,16 @@ export default {
                 nivel: "",
                 categorias: [] as { id: number; nombre: string; tipo: string}[]
             },
-            listaCategorias: [
-                { id: 1, nombre: "Python", tipo: "LENGUAJE" },
-                { id: 2, nombre: "Java", tipo: "LENGUAJE" }
-            ],
+            listaCategorias: [] as { id: number; nombre: string; tipo: string }[],
             token: "",
             mensajeConfirmacion: "",
             cargando: false
         };
+    },
+
+
+    mounted() {
+          this.cargarCategorias();
     },
 
     methods: {
@@ -53,7 +55,24 @@ export default {
 
                 this.mensajeConfirmacion = "Error al crear el curso, intenta nuevamente.";
             }
-        }
+        },
+
+        async cargarCategorias() {
+          try {
+            const token = await this.$auth0.getAccessTokenSilently({});
+            const response = await axios.get("/api/categorias", {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            this.listaCategorias = response.data;
+            console.log("Categorías cargadas:", this.listaCategorias); // ✅ Verificá por consola
+          } catch (error) {
+            console.error("Error al cargar categorías:", error);
+          }
+        },
+
+
     }
 }
 
