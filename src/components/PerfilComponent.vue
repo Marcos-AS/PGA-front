@@ -1,14 +1,9 @@
 <template>
   <div>
-    <h1>Bienvenido</h1>
-
     <div v-if="isLoading">Cargando...</div>
 
     <div v-else-if="isAuthenticated">
-      <h2>Perfil del usuario</h2>
-      <!-- <div>
-        <button @click="logout" class="btn-logout">Cerrar sesión</button>
-      </div> -->
+      <h1>Perfil del usuario</h1>
 
       <main class="perfil-container">
         <h2 class="perfil-usuario">
@@ -111,8 +106,7 @@
           <div class="perfil-card">
             <h3>Certificados</h3>
             <ul>
-              <li>Certificado 1</li>
-              <li>Certificado 2</li>
+              <li>{{  certificado ?  certificado : "Aún no tienes certificados, ve a completar un curso!"}}</li>
             </ul>
           </div>
         </div>
@@ -120,7 +114,7 @@
     </div>
 
     <div v-else>
-      <p>No estás autenticado.</p>
+      <h1>No estás autenticado.</h1>
     </div>
   </div>
 </template>
@@ -151,6 +145,7 @@ export default {
       editableProgresoValue: 0 as number,
       suscripcion: null as null | { suscripcion: {id: number; tipoSuscripcion: string; precio: number;};
        fechaInicio: string; fechaFin: string },
+      certificado: null as null,
     };
   },
   mounted() {
@@ -173,13 +168,6 @@ export default {
 },
   methods: {
     formatDate,
-    logout() {
-      this.$auth0.logout({
-        logoutParams: {
-          returnTo: window.location.origin,
-        },
-      });
-    },
     startEditing(field: string) {
       this.editingField = field;
     },

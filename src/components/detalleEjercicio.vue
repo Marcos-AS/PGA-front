@@ -288,7 +288,17 @@ const porcentajeNuevo = parseFloat(
     }
   }
 
-  onMounted(cargarEjercicio)
+  onMounted(async () => {
+  await cargarEjercicio()
+
+  const lenguaje = ejercicio.value.categorias?.[0]?.nombre?.toLowerCase() || ''
+  if (!code.value && lenguaje === 'python') {
+    console.log("valor de codigo", code.value);
+    
+    code.value = `def main():`
+  }
+})
+
   </script>
 
 <style scoped>

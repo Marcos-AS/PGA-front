@@ -210,3 +210,14 @@ function formatDate(dateStr: string) {
 }
 </script>
 
+<style scoped>
+button {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color:#1AA179;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+</style>

@@ -7,6 +7,7 @@
 
   <script lang="ts">
 import { useAuth0 } from '@auth0/auth0-vue';
+import { useRoute } from 'vue-router';
 
 
 
@@ -23,8 +24,16 @@ import { useAuth0 } from '@auth0/auth0-vue';
   }
 
   export default {
+    setup() {
+      const route = useRoute();
+      return {
+        route
+      }      
+    },
+
     mounted() {
-      console.log('PaypalButton montado');
+      this.suscripcionId = Number(this.route.query.planId);
+      // console.log('PaypalButton montado');
       this.loadPaypalScript();
     },
 
@@ -37,6 +46,7 @@ import { useAuth0 } from '@auth0/auth0-vue';
     data() {
       return {
         token: "",
+        suscripcionId: null as number | null,
       }
     },
 
@@ -81,7 +91,7 @@ import { useAuth0 } from '@auth0/auth0-vue';
                   "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                  suscripcionId: 1,
+                  suscripcionId: self.suscripcionId,
                 }),
               });
 
@@ -105,6 +115,9 @@ import { useAuth0 } from '@auth0/auth0-vue';
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${self.token}`
               },
+              body: JSON.stringify({
+                suscripcionId: self.suscripcionId
+              })
             });
 
             const orderData = await response.json();

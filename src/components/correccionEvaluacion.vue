@@ -45,7 +45,7 @@ onMounted(async () => {
           correccion.value = parsed.output.replace(/\\n/g, '\n')
         }
 
-        // 👉 Si la corrección fue correcta, descargamos el PDF
+        // Si la corrección fue correcta, descargamos el PDF
         if (parsed.success) {
           try {
             const pdfResponse = await axios.get('/api/certificaciones/1/pdf', {
